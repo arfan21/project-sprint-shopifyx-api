@@ -192,7 +192,19 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginResponse"
+                                        }
+                                    }
+                                }
+                            ]
                         }
                     },
                     "400": {
@@ -205,7 +217,7 @@ const docTemplate = `{
                                 {
                                     "type": "object",
                                     "properties": {
-                                        "errors": {
+                                        "data": {
                                             "type": "array",
                                             "items": {
                                                 "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse"

@@ -23,7 +23,7 @@ var (
 	redisMock   redismock.ClientMock
 	repoPG      user.Repository
 	repoRedis   user.RepositoryRedis
-	userSvc     user.Service
+	userSvc     *Service
 
 	defaultPassword       = "test123qwe"
 	defaultHashedPassword = "$2a$10$BAmWsmtMZvoZcVwjkYpe5uJtuxb/Ii5Il4RHwDTEup9kun6FrZN8."
@@ -66,7 +66,7 @@ func TestRegister(t *testing.T) {
 			WithArgs(req.Username, req.Name, pgxmock.AnyArg()).
 			WillReturnResult(pgxmock.NewResult("INSERT", 1))
 
-		err := userSvc.Register(context.Background(), req)
+		_, err := userSvc.Register(context.Background(), req)
 
 		assert.NoError(t, err)
 	})
@@ -82,7 +82,7 @@ func TestRegister(t *testing.T) {
 			WithArgs(req.Username, req.Name, pgxmock.AnyArg()).
 			WillReturnError(&pgconn.PgError{Code: "23505"}) // unique violation
 
-		err := userSvc.Register(context.Background(), req)
+		_, err := userSvc.Register(context.Background(), req)
 
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameAlreadyRegistered)
@@ -95,7 +95,7 @@ func TestRegister(t *testing.T) {
 			Password: "test",
 		}
 
-		err := userSvc.Register(context.Background(), req)
+		_, err := userSvc.Register(context.Background(), req)
 
 		assert.Error(t, err)
 

@@ -24,7 +24,7 @@ func New(repo user.Repository) *Service {
 	return &Service{repo: repo}
 }
 
-func (s Service) Register(ctx context.Context, req model.UserRegisterRequest) (err error) {
+func (s Service) Register(ctx context.Context, req model.UserRegisterRequest) (res model.UserLoginResponse, err error) {
 	err = validation.Validate(req)
 	if err != nil {
 		err = fmt.Errorf("user.service.Register: failed to validate request: %w", err)
@@ -54,6 +54,24 @@ func (s Service) Register(ctx context.Context, req model.UserRegisterRequest) (e
 		return
 	}
 
+	accessTokenExpire := time.Duration(config.Get().JWT.ExpireIn) * time.Second
+
+	accessToken, err := s.CreateJWTWithExpiry(
+		data.ID.String(),
+		data.Name,
+		config.Get().JWT.Secret,
+		accessTokenExpire,
+	)
+
+	if err != nil {
+		err = fmt.Errorf("user.service.Login: failed to create access token: %w", err)
+		return
+	}
+	res = model.UserLoginResponse{
+		Username:    data.Username,
+		Name:        data.Name,
+		AccessToken: accessToken,
+	}
 	return
 }
 
