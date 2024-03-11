@@ -5,8 +5,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/arfan21/shopifyx-api/config"
-	"github.com/arfan21/shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 	"github.com/jackc/pgx/v5/pgxpool"

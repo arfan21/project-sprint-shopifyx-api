@@ -1,6 +1,6 @@
 package telemetry
 
-import "github.com/arfan21/shopifyx-api/config"
+import "github.com/arfan21/project-sprint-shopifyx-api/config"
 
 var (
 	serviceName  = config.Get().Service.Name

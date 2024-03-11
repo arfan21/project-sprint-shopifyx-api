@@ -5,9 +5,9 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/arfan21/shopifyx-api/internal/entity"
-	"github.com/arfan21/shopifyx-api/pkg/constant"
-	dbpostgres "github.com/arfan21/shopifyx-api/pkg/db/postgres"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/entity"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
+	dbpostgres "github.com/arfan21/project-sprint-shopifyx-api/pkg/db/postgres"
 	"github.com/jackc/pgx/v5"
 	"github.com/jackc/pgx/v5/pgconn"
 )

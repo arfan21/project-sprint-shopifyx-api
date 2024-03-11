@@ -6,7 +6,7 @@ import (
 	"embed"
 	"errors"
 
-	"github.com/arfan21/shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"github.com/golang-migrate/migrate/v4"
 	"github.com/golang-migrate/migrate/v4/database/postgres"
 	"github.com/golang-migrate/migrate/v4/source/iofs"

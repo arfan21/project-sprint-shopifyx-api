@@ -16,8 +16,8 @@ build-win:  swag
 		
 docker-run:
 	docker run -d -p 8080:8080 \
-	--name shopifyx-api \
-	shopifyx-api:latest
+	--name project-sprint-shopifyx-api \
+	project-sprint-shopifyx-api:latest
 
 air:
 	air -c .air.toml serve

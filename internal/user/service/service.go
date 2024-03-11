@@ -6,12 +6,12 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/arfan21/shopifyx-api/config"
-	"github.com/arfan21/shopifyx-api/internal/entity"
-	"github.com/arfan21/shopifyx-api/internal/model"
-	"github.com/arfan21/shopifyx-api/internal/user"
-	"github.com/arfan21/shopifyx-api/pkg/constant"
-	"github.com/arfan21/shopifyx-api/pkg/validation"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/entity"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/model"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/user"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/validation"
 	"github.com/golang-jwt/jwt/v5"
 	"golang.org/x/crypto/bcrypt"
 )

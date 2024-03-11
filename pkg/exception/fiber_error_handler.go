@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/arfan21/shopifyx-api/pkg/constant"
-	"github.com/arfan21/shopifyx-api/pkg/logger"
-	"github.com/arfan21/shopifyx-api/pkg/pkgutil"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5"

@@ -4,11 +4,11 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/arfan21/shopifyx-api/config"
-	"github.com/arfan21/shopifyx-api/internal/model"
-	"github.com/arfan21/shopifyx-api/pkg/constant"
-	"github.com/arfan21/shopifyx-api/pkg/logger"
-	"github.com/arfan21/shopifyx-api/pkg/pkgutil"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/model"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
 )

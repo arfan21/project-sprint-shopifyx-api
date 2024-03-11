@@ -1,9 +1,9 @@
 package server
 
 import (
-	userctrl "github.com/arfan21/shopifyx-api/internal/user/controller"
-	userrepo "github.com/arfan21/shopifyx-api/internal/user/repository"
-	usersvc "github.com/arfan21/shopifyx-api/internal/user/service"
+	userctrl "github.com/arfan21/project-sprint-shopifyx-api/internal/user/controller"
+	userrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/user/repository"
+	usersvc "github.com/arfan21/project-sprint-shopifyx-api/internal/user/service"
 	"github.com/gofiber/fiber/v2"
 )
 

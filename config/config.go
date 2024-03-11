@@ -149,7 +149,7 @@ func GetViper(filenames ...string) *viper.Viper {
 func initDefaultValue(v *viper.Viper) {
 	v.SetDefault("HTTP_PORT", "8000")
 	v.SetDefault("ENV", "dev")
-	v.SetDefault("SERVICE_NAME", "shopifyx-api")
+	v.SetDefault("SERVICE_NAME", "project-sprint-shopifyx-api")
 	v.SetDefault("SERVICE_TIMEOUT", 30)
 	v.SetDefault("OTEL_INSECURE", true)
 	v.SetDefault("OTEL_EXPORTER_PROMETHEUS_PATH", "/metrics")

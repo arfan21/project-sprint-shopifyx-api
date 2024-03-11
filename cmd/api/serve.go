@@ -3,11 +3,11 @@ package api
 import (
 	"context"
 
-	"github.com/arfan21/shopifyx-api/config"
-	"github.com/arfan21/shopifyx-api/internal/server"
-	dbpostgres "github.com/arfan21/shopifyx-api/pkg/db/postgres"
-	"github.com/arfan21/shopifyx-api/pkg/logger"
-	"github.com/arfan21/shopifyx-api/pkg/telemetry"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/server"
+	dbpostgres "github.com/arfan21/project-sprint-shopifyx-api/pkg/db/postgres"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/telemetry"
 	"github.com/urfave/cli/v2"
 )
 

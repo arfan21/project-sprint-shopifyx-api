@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/arfan21/shopifyx-api/config"
-	"github.com/arfan21/shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"go.opentelemetry.io/contrib/instrumentation/runtime"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/exporters/otlp/otlpmetric/otlpmetricgrpc"

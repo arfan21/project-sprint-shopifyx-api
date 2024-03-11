@@ -1,8 +1,8 @@
 package migration
 
 import (
-	"github.com/arfan21/shopifyx-api/migration"
-	dbpostgres "github.com/arfan21/shopifyx-api/pkg/db/postgres"
+	"github.com/arfan21/project-sprint-shopifyx-api/migration"
+	dbpostgres "github.com/arfan21/project-sprint-shopifyx-api/pkg/db/postgres"
 	"github.com/jackc/pgx/v5/stdlib"
 	"github.com/urfave/cli/v2"
 )

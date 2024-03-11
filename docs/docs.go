@@ -43,7 +43,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLoginRequest"
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginRequest"
                         }
                     }
                 ],
@@ -53,13 +53,13 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLoginResponse"
+                                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginResponse"
                                         }
                                     }
                                 }
@@ -71,156 +71,15 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "errors": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/users/logout": {
-            "post": {
-                "description": "Logout user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Logout user",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "With the bearer started",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
-                    {
-                        "description": "Payload user Logout Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLogoutRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
-                        }
-                    },
-                    "400": {
-                        "description": "Error validation field",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "errors": {
-                                            "type": "array",
-                                            "items": {
-                                                "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse"
-                                            }
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "500": {
-                        "description": "Internal Server Error",
-                        "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/v1/users/refresh-token": {
-            "post": {
-                "description": "Refresh Token user",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "user"
-                ],
-                "summary": "Refresh Token user",
-                "parameters": [
-                    {
-                        "description": "Payload user Refresh Token Request",
-                        "name": "body",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserRefreshTokenRequest"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
                                 },
                                 {
                                     "type": "object",
                                     "properties": {
                                         "data": {
-                                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLoginResponse"
-                                        }
-                                    }
-                                }
-                            ]
-                        }
-                    },
-                    "400": {
-                        "description": "Error validation field",
-                        "schema": {
-                            "allOf": [
-                                {
-                                    "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
-                                },
-                                {
-                                    "type": "object",
-                                    "properties": {
-                                        "errors": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse"
+                                                "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse"
                                             }
                                         }
                                     }
@@ -231,7 +90,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
                         }
                     }
                 }
@@ -257,7 +116,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserRegisterRequest"
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserRegisterRequest"
                         }
                     }
                 ],
@@ -265,7 +124,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
                         }
                     },
                     "400": {
@@ -273,7 +132,7 @@ const docTemplate = `{
                         "schema": {
                             "allOf": [
                                 {
-                                    "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
                                 },
                                 {
                                     "type": "object",
@@ -281,7 +140,7 @@ const docTemplate = `{
                                         "errors": {
                                             "type": "array",
                                             "items": {
-                                                "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse"
+                                                "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse"
                                             }
                                         }
                                     }
@@ -292,7 +151,7 @@ const docTemplate = `{
                     "500": {
                         "description": "Internal Server Error",
                         "schema": {
-                            "$ref": "#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse"
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
                         }
                     }
                 }
@@ -300,87 +159,61 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "github_com_arfan21_shopifyx-api_internal_model.UserLoginRequest": {
+        "github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginRequest": {
             "type": "object",
             "required": [
-                "email",
-                "password"
+                "password",
+                "username"
             ],
             "properties": {
-                "email": {
+                "password": {
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 5
+                },
+                "username": {
                     "type": "string"
+                }
+            }
+        },
+        "github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginResponse": {
+            "type": "object",
+            "properties": {
+                "accessToken": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "username": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserRegisterRequest": {
+            "type": "object",
+            "required": [
+                "name",
+                "password",
+                "username"
+            ],
+            "properties": {
+                "name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "minLength": 5
                 },
                 "password": {
                     "type": "string",
-                    "maxLength": 20,
-                    "minLength": 8
-                }
-            }
-        },
-        "github_com_arfan21_shopifyx-api_internal_model.UserLoginResponse": {
-            "type": "object",
-            "properties": {
-                "access_token": {
-                    "type": "string"
+                    "maxLength": 15,
+                    "minLength": 5
                 },
-                "expires_in": {
-                    "type": "integer"
-                },
-                "expires_in_refresh_token": {
-                    "type": "integer"
-                },
-                "refresh_token": {
-                    "type": "string"
-                },
-                "token_type": {
+                "username": {
                     "type": "string"
                 }
             }
         },
-        "github_com_arfan21_shopifyx-api_internal_model.UserLogoutRequest": {
-            "type": "object",
-            "required": [
-                "refresh_token"
-            ],
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_arfan21_shopifyx-api_internal_model.UserRefreshTokenRequest": {
-            "type": "object",
-            "required": [
-                "refresh_token"
-            ],
-            "properties": {
-                "refresh_token": {
-                    "type": "string"
-                }
-            }
-        },
-        "github_com_arfan21_shopifyx-api_internal_model.UserRegisterRequest": {
-            "type": "object",
-            "required": [
-                "email",
-                "fullname",
-                "password"
-            ],
-            "properties": {
-                "email": {
-                    "type": "string"
-                },
-                "fullname": {
-                    "type": "string"
-                },
-                "password": {
-                    "type": "string",
-                    "maxLength": 20,
-                    "minLength": 8
-                }
-            }
-        },
-        "github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse": {
+        "github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse": {
             "type": "object",
             "properties": {
                 "field": {
@@ -391,25 +224,13 @@ const docTemplate = `{
                 }
             }
         },
-        "github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse": {
+        "github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse": {
             "type": "object",
             "properties": {
-                "code": {
-                    "type": "integer",
-                    "example": 200
-                },
                 "data": {},
-                "errors": {
-                    "type": "array",
-                    "items": {}
-                },
                 "message": {
                     "type": "string",
                     "example": "Success"
-                },
-                "status": {
-                    "type": "string",
-                    "example": "OK"
                 }
             }
         }
@@ -422,8 +243,8 @@ var SwaggerInfo = &swag.Spec{
 	Host:             "localhost:8080",
 	BasePath:         "/",
 	Schemes:          []string{},
-	Title:            "shopifyx-api",
-	Description:      "This is a sample server cell for shopifyx-api.",
+	Title:            "project-sprint-shopifyx-api",
+	Description:      "This is a sample server cell for project-sprint-shopifyx-api.",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

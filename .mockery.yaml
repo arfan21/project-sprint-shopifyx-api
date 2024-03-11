@@ -5,5 +5,5 @@ mockname: "{{.InterfaceName}}"
 outpkg: "{{.PackageName}}"
 filename: "{{.InterfaceName}}.go"
 packages:
-    github.com/arfan21/shopifyx-api/internal/domain:
+    github.com/arfan21/project-sprint-shopifyx-api/internal/domain:
         interfaces:

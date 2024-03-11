@@ -1,80 +1,55 @@
 basePath: /
 definitions:
-  github_com_arfan21_shopifyx-api_internal_model.UserLoginRequest:
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginRequest:
     properties:
-      email:
+      password:
+        maxLength: 15
+        minLength: 5
+        type: string
+      username:
+        type: string
+    required:
+    - password
+    - username
+    type: object
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginResponse:
+    properties:
+      accessToken:
+        type: string
+      name:
+        type: string
+      username:
+        type: string
+    type: object
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserRegisterRequest:
+    properties:
+      name:
+        maxLength: 50
+        minLength: 5
         type: string
       password:
-        maxLength: 20
-        minLength: 8
+        maxLength: 15
+        minLength: 5
+        type: string
+      username:
         type: string
     required:
-    - email
+    - name
     - password
+    - username
     type: object
-  github_com_arfan21_shopifyx-api_internal_model.UserLoginResponse:
-    properties:
-      access_token:
-        type: string
-      expires_in:
-        type: integer
-      expires_in_refresh_token:
-        type: integer
-      refresh_token:
-        type: string
-      token_type:
-        type: string
-    type: object
-  github_com_arfan21_shopifyx-api_internal_model.UserLogoutRequest:
-    properties:
-      refresh_token:
-        type: string
-    required:
-    - refresh_token
-    type: object
-  github_com_arfan21_shopifyx-api_internal_model.UserRefreshTokenRequest:
-    properties:
-      refresh_token:
-        type: string
-    required:
-    - refresh_token
-    type: object
-  github_com_arfan21_shopifyx-api_internal_model.UserRegisterRequest:
-    properties:
-      email:
-        type: string
-      fullname:
-        type: string
-      password:
-        maxLength: 20
-        minLength: 8
-        type: string
-    required:
-    - email
-    - fullname
-    - password
-    type: object
-  github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse:
+  github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse:
     properties:
       field:
         type: string
       message:
         type: string
     type: object
-  github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse:
+  github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse:
     properties:
-      code:
-        example: 200
-        type: integer
       data: {}
-      errors:
-        items: {}
-        type: array
       message:
         example: Success
-        type: string
-      status:
-        example: OK
         type: string
     type: object
 host: localhost:8080
@@ -82,12 +57,12 @@ info:
   contact:
     name: API Support
     url: http://www.synapsis.id
-  description: This is a sample server cell for shopifyx-api.
+  description: This is a sample server cell for project-sprint-shopifyx-api.
   license:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   termsOfService: http://swagger.io/terms/
-  title: shopifyx-api
+  title: project-sprint-shopifyx-api
   version: "1.0"
 paths:
   /api/v1/users/login:
@@ -101,7 +76,7 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLoginRequest'
+          $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginRequest'
       produces:
       - application/json
       responses:
@@ -109,111 +84,27 @@ paths:
           description: OK
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
             - properties:
                 data:
-                  $ref: '#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLoginResponse'
+                  $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginResponse'
               type: object
         "400":
           description: Error validation field
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
             - properties:
-                errors:
+                data:
                   items:
-                    $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse'
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse'
                   type: array
               type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
       summary: Login user
-      tags:
-      - user
-  /api/v1/users/logout:
-    post:
-      consumes:
-      - application/json
-      description: Logout user
-      parameters:
-      - description: With the bearer started
-        in: header
-        name: Authorization
-        required: true
-        type: string
-      - description: Payload user Logout Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLogoutRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
-        "400":
-          description: Error validation field
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
-            - properties:
-                errors:
-                  items:
-                    $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse'
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
-      summary: Logout user
-      tags:
-      - user
-  /api/v1/users/refresh-token:
-    post:
-      consumes:
-      - application/json
-      description: Refresh Token user
-      parameters:
-      - description: Payload user Refresh Token Request
-        in: body
-        name: body
-        required: true
-        schema:
-          $ref: '#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserRefreshTokenRequest'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
-            - properties:
-                data:
-                  $ref: '#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserLoginResponse'
-              type: object
-        "400":
-          description: Error validation field
-          schema:
-            allOf:
-            - $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
-            - properties:
-                errors:
-                  items:
-                    $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse'
-                  type: array
-              type: object
-        "500":
-          description: Internal Server Error
-          schema:
-            $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
-      summary: Refresh Token user
       tags:
       - user
   /api/v1/users/register:
@@ -227,29 +118,29 @@ paths:
         name: body
         required: true
         schema:
-          $ref: '#/definitions/github_com_arfan21_shopifyx-api_internal_model.UserRegisterRequest'
+          $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserRegisterRequest'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
         "400":
           description: Error validation field
           schema:
             allOf:
-            - $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
             - properties:
                 errors:
                   items:
-                    $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.ErrValidationResponse'
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse'
                   type: array
               type: object
         "500":
           description: Internal Server Error
           schema:
-            $ref: '#/definitions/github_com_arfan21_shopifyx-api_pkg_pkgutil.HTTPResponse'
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
       summary: Register user
       tags:
       - user

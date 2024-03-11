@@ -7,7 +7,7 @@ import (
 
 	"github.com/agoda-com/opentelemetry-go/otelzerolog"
 	otel "github.com/agoda-com/opentelemetry-logs-go"
-	"github.com/arfan21/shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
 	"github.com/rs/zerolog"
 )
 

@@ -6,7 +6,7 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/arfan21/shopifyx-api/pkg/constant"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	"github.com/go-playground/locales/en"
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"

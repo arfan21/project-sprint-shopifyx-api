@@ -1,10 +1,10 @@
 package userctrl
 
 import (
-	"github.com/arfan21/shopifyx-api/internal/model"
-	"github.com/arfan21/shopifyx-api/internal/user"
-	"github.com/arfan21/shopifyx-api/pkg/exception"
-	"github.com/arfan21/shopifyx-api/pkg/pkgutil"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/model"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/user"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/exception"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
 	"github.com/gofiber/fiber/v2"
 )
 

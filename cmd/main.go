@@ -3,15 +3,15 @@ package main
 import (
 	"os"
 
-	"github.com/arfan21/shopifyx-api/cmd/api"
-	migration "github.com/arfan21/shopifyx-api/cmd/migrate"
-	"github.com/arfan21/shopifyx-api/config"
+	"github.com/arfan21/project-sprint-shopifyx-api/cmd/api"
+	migration "github.com/arfan21/project-sprint-shopifyx-api/cmd/migrate"
+	"github.com/arfan21/project-sprint-shopifyx-api/config"
 	"github.com/urfave/cli/v2"
 )
 
-// @title shopifyx-api
+// @title project-sprint-shopifyx-api
 // @version 1.0
-// @description This is a sample server cell for shopifyx-api.
+// @description This is a sample server cell for project-sprint-shopifyx-api.
 // @termsOfService http://swagger.io/terms/
 // @contact.name API Support
 // @contact.url http://www.synapsis.id

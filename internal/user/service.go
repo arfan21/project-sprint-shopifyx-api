@@ -3,7 +3,7 @@ package user
 import (
 	"context"
 
-	"github.com/arfan21/shopifyx-api/internal/model"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/model"
 )
 
 type Service interface {

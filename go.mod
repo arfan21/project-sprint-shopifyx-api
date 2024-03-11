@@ -1,4 +1,4 @@
-module github.com/arfan21/shopifyx-api
+module github.com/arfan21/project-sprint-shopifyx-api
 
 go 1.22.0
 

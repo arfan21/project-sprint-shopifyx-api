@@ -7,7 +7,7 @@ import (
 	"github.com/agoda-com/opentelemetry-logs-go/exporters/otlp/otlplogs"
 	"github.com/agoda-com/opentelemetry-logs-go/exporters/otlp/otlplogs/otlplogsgrpc"
 	sdk "github.com/agoda-com/opentelemetry-logs-go/sdk/logs"
-	"github.com/arfan21/shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 )
 
 func InitLogs() (func(context.Context) error, error) {

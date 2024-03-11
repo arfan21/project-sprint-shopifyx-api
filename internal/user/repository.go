@@ -4,8 +4,8 @@ import (
 	"context"
 	"time"
 
-	"github.com/arfan21/shopifyx-api/internal/entity"
-	userrepo "github.com/arfan21/shopifyx-api/internal/user/repository"
+	"github.com/arfan21/project-sprint-shopifyx-api/internal/entity"
+	userrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/user/repository"
 	"github.com/jackc/pgx/v5"
 )
 

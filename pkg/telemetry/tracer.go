@@ -3,7 +3,7 @@ package telemetry
 import (
 	"context"
 
-	"github.com/arfan21/shopifyx-api/pkg/logger"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"github.com/gofiber/fiber/v2/middleware/requestid"
 	"go.opentelemetry.io/otel"
 	"go.opentelemetry.io/otel/attribute"
