@@ -29,11 +29,12 @@ func (r Repository) WithTx(tx pgx.Tx) *Repository {
 
 func (r Repository) Create(ctx context.Context, data entity.Product) (err error) {
 	query := `
-		INSERT INTO products (name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
+		INSERT INTO products (id, name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8,  $9)
 	`
 
 	_, err = r.db.Exec(ctx, query,
+		data.ID,
 		data.Name,
 		data.Price,
 		data.ImageUrl,

@@ -63,7 +63,7 @@ func TestRegister(t *testing.T) {
 		}
 
 		pgxMock.ExpectExec("INSERT INTO users (.+)").
-			WithArgs(req.Username, req.Name, pgxmock.AnyArg()).
+			WithArgs(pgxmock.AnyArg(), req.Username, req.Name, pgxmock.AnyArg()).
 			WillReturnResult(pgxmock.NewResult("INSERT", 1))
 
 		_, err := userSvc.Register(context.Background(), req)
@@ -79,7 +79,7 @@ func TestRegister(t *testing.T) {
 		}
 
 		pgxMock.ExpectExec("INSERT INTO users (.+)").
-			WithArgs(req.Username, req.Name, pgxmock.AnyArg()).
+			WithArgs(pgxmock.AnyArg(), req.Username, req.Name, pgxmock.AnyArg()).
 			WillReturnError(&pgconn.PgError{Code: "23505"}) // unique violation
 
 		_, err := userSvc.Register(context.Background(), req)

@@ -61,7 +61,7 @@ func TestCreate(t *testing.T) {
 		}
 
 		pgxMock.ExpectExec("INSERT INTO products (.+)").
-			WithArgs(req.Name, *req.Price, req.ImageUrl, *req.Stock, entity.ProductCondition(req.Condition), req.Tags, *req.IsPurchaseable, req.UserID).
+			WithArgs(pgxmock.AnyArg(), req.Name, *req.Price, req.ImageUrl, *req.Stock, entity.ProductCondition(req.Condition), req.Tags, *req.IsPurchaseable, req.UserID).
 			WillReturnResult(pgxmock.NewResult("INSERT", 1))
 
 		err := productSvc.Create(context.Background(), req)

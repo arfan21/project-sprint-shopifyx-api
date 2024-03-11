@@ -10,6 +10,7 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/product"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/validation"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -32,7 +33,14 @@ func (s Service) Create(ctx context.Context, req model.ProductRequest) (err erro
 		req.Tags = []string{}
 	}
 
+	id, err := uuid.NewV7()
+	if err != nil {
+		err = fmt.Errorf("product.service.Create: failed to generate product id: %w", err)
+		return
+	}
+
 	data := entity.Product{
+		ID:             id,
 		UserID:         req.UserID,
 		Name:           req.Name,
 		Price:          *req.Price,

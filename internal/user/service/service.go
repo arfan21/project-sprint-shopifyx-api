@@ -13,6 +13,7 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/validation"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -42,7 +43,14 @@ func (s Service) Register(ctx context.Context, req model.UserRegisterRequest) (r
 		return
 	}
 
+	id, err := uuid.NewV7()
+	if err != nil {
+		err = fmt.Errorf("product.service.Create: failed to generate product id: %w", err)
+		return
+	}
+
 	data := entity.User{
+		ID:       id,
 		Name:     req.Name,
 		Username: req.Username,
 		Password: string(hashedPassword),

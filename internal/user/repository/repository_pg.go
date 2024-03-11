@@ -33,11 +33,11 @@ func (r Repository) WithTx(tx pgx.Tx) *Repository {
 
 func (r Repository) Create(ctx context.Context, data entity.User) (err error) {
 	query := `
-		INSERT INTO users (username, name, password)
-		VALUES ($1, $2, $3)
+		INSERT INTO users (id, username, name, password)
+		VALUES ($1, $2, $3, $4)
 	`
 
-	_, err = r.db.Exec(ctx, query, data.Username, data.Name, data.Password)
+	_, err = r.db.Exec(ctx, query, data.ID, data.Username, data.Name, data.Password)
 	if err != nil {
 		var pgxError *pgconn.PgError
 		if errors.As(err, &pgxError) {
