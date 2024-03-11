@@ -7,5 +7,6 @@ import (
 )
 
 type Service interface {
-	Create(ctx context.Context, req model.ProductCreateRequest) (err error)
+	Create(ctx context.Context, req model.ProductRequest) (err error)
+	Update(ctx context.Context, req model.ProductRequest) (err error)
 }

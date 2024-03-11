@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
@@ -74,6 +75,12 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 				"message": fmt.Sprintf("%s harus %s", unmarshalTypeError.Field, unmarshalTypeError.Type),
 			},
 		}
+	}
+
+	// handle error parse uuid
+	if strings.Contains(strings.ToLower(err.Error()), strings.ToLower("invalid UUID")) {
+		defaultRes.Code = fiber.StatusBadRequest
+		defaultRes.Message = constant.ErrInvalidUUID.Error()
 	}
 
 	if defaultRes.Code >= 500 {

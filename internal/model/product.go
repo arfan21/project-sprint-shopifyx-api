@@ -5,8 +5,9 @@ import (
 	"github.com/shopspring/decimal"
 )
 
-type ProductCreateRequest struct {
-	UserID         uuid.UUID        `json:"-" validate:"required"`
+type ProductRequest struct {
+	ID             uuid.UUID        `json:"-" validate:"omitempty"`
+	UserID         uuid.UUID        `json:"-" validate:"omitempty"`
 	Name           string           `json:"name" validate:"required,min=5,max=60"`
 	Price          *decimal.Decimal `json:"price" validate:"required"`
 	ImageUrl       string           `json:"imageUrl" validate:"required,url"`

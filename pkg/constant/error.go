@@ -1,6 +1,7 @@
 package constant
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -11,6 +12,9 @@ const (
 var (
 	ErrUsernameAlreadyRegistered = &ErrWithCode{HTTPStatusCode: http.StatusConflict, Message: "username already registered"}
 	ErrUsernameOrPasswordInvalid = &ErrWithCode{HTTPStatusCode: http.StatusBadRequest, Message: "username or password invalid"}
+	ErrInvalidUUID               = errors.New("invalid uuid length or format")
+	ErrAccessForbidden           = &ErrWithCode{HTTPStatusCode: http.StatusForbidden, Message: "access forbidden"}
+	ErrProductNotFound           = &ErrWithCode{HTTPStatusCode: http.StatusNotFound, Message: "product not found"}
 )
 
 type ErrWithCode struct {

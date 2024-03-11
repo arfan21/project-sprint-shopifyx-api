@@ -8,6 +8,7 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
 	"github.com/gofiber/fiber/v2"
+	"github.com/google/uuid"
 )
 
 type ControllerHTTP struct {
@@ -24,7 +25,7 @@ func New(svc product.Service) *ControllerHTTP {
 // @Accept json
 // @Produce json
 // @Param Authorization header string true "With the bearer started"
-// @Param body body model.ProductCreateRequest true "Payload product create request"
+// @Param body body model.ProductRequest true "Payload product create request"
 // @Success 200 {object} pkgutil.HTTPResponse
 // @Failure 400 {object} pkgutil.HTTPResponse{data=[]pkgutil.ErrValidationResponse} "Error validation field"
 // @Failure 500 {object} pkgutil.HTTPResponse
@@ -38,7 +39,7 @@ func (ctrl ControllerHTTP) Create(c *fiber.Ctx) error {
 		})
 	}
 
-	var req model.ProductCreateRequest
+	var req model.ProductRequest
 	err := c.BodyParser(&req)
 	exception.PanicIfNeeded(err)
 
@@ -49,5 +50,42 @@ func (ctrl ControllerHTTP) Create(c *fiber.Ctx) error {
 
 	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
 		Message: "product added successfully",
+	})
+}
+
+// @Summary Update product
+// @Description Update product
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "With the bearer started"
+// @Param body body model.ProductRequest true "Payload product update request"
+// @Success 200 {object} pkgutil.HTTPResponse
+// @Failure 400 {object} pkgutil.HTTPResponse{data=[]pkgutil.ErrValidationResponse} "Error validation field"
+// @Failure 500 {object} pkgutil.HTTPResponse
+// @Router /v1/product/{id} [patch]
+func (ctrl ControllerHTTP) Update(c *fiber.Ctx) error {
+	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
+	if !ok {
+		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "invalid or expired token",
+		})
+	}
+	var req model.ProductRequest
+	err := c.BodyParser(&req)
+	exception.PanicIfNeeded(err)
+
+	req.UserID = claims.UserID
+
+	idStr := c.Params("id")
+	req.ID, err = uuid.Parse(idStr)
+	exception.PanicIfNeeded(err)
+
+	err = ctrl.svc.Update(c.Context(), req)
+	exception.PanicIfNeeded(err)
+
+	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
+		Message: "product updated successfully",
 	})
 }

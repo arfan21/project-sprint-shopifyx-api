@@ -6,6 +6,7 @@ import (
 
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/entity"
 	dbpostgres "github.com/arfan21/project-sprint-shopifyx-api/pkg/db/postgres"
+	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
 )
 
@@ -68,6 +69,32 @@ func (r Repository) Update(ctx context.Context, data entity.Product) (err error)
 	)
 	if err != nil {
 		err = fmt.Errorf("product.repository.Update: failed to update product: %w", err)
+		return
+	}
+
+	return
+}
+
+func (r Repository) GetByID(ctx context.Context, id uuid.UUID) (product entity.Product, err error) {
+	query := `
+		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id
+		FROM products
+		WHERE id = $1
+	`
+
+	err = r.db.QueryRow(ctx, query, id).Scan(
+		&product.ID,
+		&product.Name,
+		&product.Price,
+		&product.ImageUrl,
+		&product.Stock,
+		&product.Condition,
+		&product.Tags,
+		&product.IsPurchaseable,
+		&product.UserID,
+	)
+	if err != nil {
+		err = fmt.Errorf("product.repository.GetByID: failed to get product by id: %w", err)
 		return
 	}
 
