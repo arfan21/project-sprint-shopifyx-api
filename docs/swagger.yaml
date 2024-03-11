@@ -25,6 +25,7 @@ definitions:
         type: array
     required:
     - condition
+    - imageUrl
     - isPurchaseable
     - name
     - price

@@ -243,6 +243,7 @@ const docTemplate = `{
             "type": "object",
             "required": [
                 "condition",
+                "imageUrl",
                 "isPurchaseable",
                 "name",
                 "price",

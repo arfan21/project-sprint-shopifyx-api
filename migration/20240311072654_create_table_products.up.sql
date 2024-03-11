@@ -1,6 +1,5 @@
-CREATE TYPE IF NOT EXISTS product_condition AS ENUM ('new', 'second');
-
-CREATE TABLE IF NOT EXISTS products(
+CREATE TABLE
+    IF NOT EXISTS products(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id UUID NOT NULL,
     name VARCHAR(255) NOT NULL,
@@ -13,5 +12,5 @@ CREATE TABLE IF NOT EXISTS products(
     created_at TIMESTAMP DEFAULT now(),
     updated_at TIMESTAMP DEFAULT now(),
 
-    ADD CONSTRAINT fk_user_id_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE  
+    CONSTRAINT fk_user_id_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE  
 );

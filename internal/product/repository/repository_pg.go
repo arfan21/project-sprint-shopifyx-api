@@ -49,3 +49,27 @@ func (r Repository) Create(ctx context.Context, data entity.Product) (err error)
 
 	return
 }
+
+func (r Repository) Update(ctx context.Context, data entity.Product) (err error) {
+	query := `
+		UPDATE products
+		SET name = $1, price = $2, imageUrl = $3, condition = $4, tags = $5, isPurchaseable = $6
+		WHERE id = $7
+	`
+
+	_, err = r.db.Exec(ctx, query,
+		data.Name,
+		data.Price,
+		data.ImageUrl,
+		data.Condition,
+		data.Tags,
+		data.IsPurchaseable,
+		data.ID,
+	)
+	if err != nil {
+		err = fmt.Errorf("product.repository.Update: failed to update product: %w", err)
+		return
+	}
+
+	return
+}

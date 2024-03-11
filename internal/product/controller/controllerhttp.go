@@ -5,6 +5,7 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/product"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/exception"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
 	"github.com/gofiber/fiber/v2"
 )
@@ -29,8 +30,9 @@ func New(svc product.Service) *ControllerHTTP {
 // @Failure 500 {object} pkgutil.HTTPResponse
 // @Router /v1/product [post]
 func (ctrl ControllerHTTP) Create(c *fiber.Ctx) error {
-	claims, ok := c.Locals(constant.JWTClaimsContextKey).(*model.JWTClaims)
+	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
 	if !ok {
+		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
 		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
 			"message": "invalid or expired token",
 		})
