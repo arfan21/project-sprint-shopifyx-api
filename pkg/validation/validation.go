@@ -11,6 +11,7 @@ import (
 	ut "github.com/go-playground/universal-translator"
 	"github.com/go-playground/validator/v10"
 	en_translations "github.com/go-playground/validator/v10/translations/en"
+	"github.com/shopspring/decimal"
 )
 
 var (
@@ -31,6 +32,13 @@ func Validate[T any](modelValidate T) error {
 
 	validateOnce.Do(func() {
 		validate = validator.New()
+
+		validate.RegisterCustomTypeFunc(func(field reflect.Value) interface{} {
+			if valuer, ok := field.Interface().(decimal.Decimal); ok {
+				return valuer.String()
+			}
+			return nil
+		}, decimal.Decimal{})
 	})
 
 	translatorOnce.Do(func() {

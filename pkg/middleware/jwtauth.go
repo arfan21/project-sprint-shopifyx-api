@@ -11,6 +11,7 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
 	"github.com/gofiber/fiber/v2"
 	"github.com/golang-jwt/jwt/v5"
+	"github.com/google/uuid"
 )
 
 func JWTAuth(c *fiber.Ctx) error {
@@ -49,6 +50,15 @@ func JWTAuth(c *fiber.Ctx) error {
 
 	claims, ok := t.Claims.(*model.JWTClaims)
 	if ok && t.Valid && claims != nil {
+		idUUID, err := uuid.Parse(claims.Subject)
+		if err != nil {
+			logger.Log(c.UserContext()).Error().Msgf("middleware: failed to parse user id: %v", err)
+			return c.Status(fiber.StatusUnauthorized).JSON(pkgutil.HTTPResponse{
+				Code:    fiber.StatusUnauthorized,
+				Message: "invalid or expired token",
+			})
+		}
+		claims.UserID = idUUID
 		c.Locals(constant.JWTClaimsContextKey, *claims)
 		return c.Next()
 	}

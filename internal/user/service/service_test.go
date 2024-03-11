@@ -23,7 +23,7 @@ var (
 	redisMock   redismock.ClientMock
 	repoPG      user.Repository
 	repoRedis   user.RepositoryRedis
-	servcie     user.Service
+	userSvc     user.Service
 
 	defaultPassword       = "test123qwe"
 	defaultHashedPassword = "$2a$10$BAmWsmtMZvoZcVwjkYpe5uJtuxb/Ii5Il4RHwDTEup9kun6FrZN8."
@@ -47,8 +47,8 @@ func initDep(t *testing.T) {
 		repoPG = userrepo.New(pgxMock)
 	}
 
-	if servcie == nil {
-		servcie = New(repoPG)
+	if userSvc == nil {
+		userSvc = New(repoPG)
 	}
 }
 
@@ -66,7 +66,7 @@ func TestRegister(t *testing.T) {
 			WithArgs(req.Username, req.Name, pgxmock.AnyArg()).
 			WillReturnResult(pgxmock.NewResult("INSERT", 1))
 
-		err := servcie.Register(context.Background(), req)
+		err := userSvc.Register(context.Background(), req)
 
 		assert.NoError(t, err)
 	})
@@ -82,7 +82,7 @@ func TestRegister(t *testing.T) {
 			WithArgs(req.Username, req.Name, pgxmock.AnyArg()).
 			WillReturnError(&pgconn.PgError{Code: "23505"}) // unique violation
 
-		err := servcie.Register(context.Background(), req)
+		err := userSvc.Register(context.Background(), req)
 
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameAlreadyRegistered)
@@ -95,7 +95,7 @@ func TestRegister(t *testing.T) {
 			Password: "test",
 		}
 
-		err := servcie.Register(context.Background(), req)
+		err := userSvc.Register(context.Background(), req)
 
 		assert.Error(t, err)
 
@@ -120,7 +120,7 @@ func TestLogin(t *testing.T) {
 			WillReturnRows(pgxMock.NewRows([]string{"id", "username", "name", "password"}).
 				AddRow(id, "test", req.Username, defaultHashedPassword))
 
-		res, err := servcie.Login(context.Background(), req)
+		res, err := userSvc.Login(context.Background(), req)
 		assert.NoError(t, err)
 		assert.NotEmpty(t, res)
 
@@ -138,7 +138,7 @@ func TestLogin(t *testing.T) {
 			WithArgs(req.Username).
 			WillReturnError(pgx.ErrNoRows)
 
-		_, err := servcie.Login(context.Background(), req)
+		_, err := userSvc.Login(context.Background(), req)
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameOrPasswordInvalid)
 	})
@@ -154,7 +154,7 @@ func TestLogin(t *testing.T) {
 			WillReturnRows(pgxMock.NewRows([]string{"id", "username", "name", "password"}).
 				AddRow(id, "test", req.Username, defaultHashedPassword))
 
-		_, err := servcie.Login(context.Background(), req)
+		_, err := userSvc.Login(context.Background(), req)
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameOrPasswordInvalid)
 	})

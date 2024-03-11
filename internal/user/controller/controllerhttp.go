@@ -25,7 +25,7 @@ func New(svc user.Service) *ControllerHTTP {
 // @Success 201 {object} pkgutil.HTTPResponse
 // @Failure 400 {object} pkgutil.HTTPResponse{errors=[]pkgutil.ErrValidationResponse} "Error validation field"
 // @Failure 500 {object} pkgutil.HTTPResponse
-// @Router /api/v1/users/register [post]
+// @Router /v1/user/register [post]
 func (ctrl ControllerHTTP) Register(c *fiber.Ctx) error {
 	var req model.UserRegisterRequest
 	err := c.BodyParser(&req)
@@ -35,7 +35,7 @@ func (ctrl ControllerHTTP) Register(c *fiber.Ctx) error {
 	exception.PanicIfNeeded(err)
 
 	return c.Status(fiber.StatusCreated).JSON(pkgutil.HTTPResponse{
-		Code: fiber.StatusCreated,
+		Message: "User registered successfully",
 	})
 }
 
@@ -48,7 +48,7 @@ func (ctrl ControllerHTTP) Register(c *fiber.Ctx) error {
 // @Success 200 {object} pkgutil.HTTPResponse{data=model.UserLoginResponse}
 // @Failure 400 {object} pkgutil.HTTPResponse{data=[]pkgutil.ErrValidationResponse} "Error validation field"
 // @Failure 500 {object} pkgutil.HTTPResponse
-// @Router /api/v1/users/login [post]
+// @Router /v1/user/login [post]
 func (ctrl ControllerHTTP) Login(c *fiber.Ctx) error {
 	var req model.UserLoginRequest
 	err := c.BodyParser(&req)

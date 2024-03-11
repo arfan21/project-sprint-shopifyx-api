@@ -23,7 +23,75 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
-        "/api/v1/users/login": {
+        "/v1/product": {
+            "post": {
+                "description": "Create product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "summary": "Create product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Payload product create request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductCreateRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error validation field",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/user/login": {
             "post": {
                 "description": "Login user",
                 "consumes": [
@@ -96,7 +164,7 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/v1/users/register": {
+        "/v1/user/register": {
             "post": {
                 "description": "Register user",
                 "consumes": [
@@ -159,6 +227,48 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductCreateRequest": {
+            "type": "object",
+            "required": [
+                "condition",
+                "isPurchaseable",
+                "name",
+                "price",
+                "stock"
+            ],
+            "properties": {
+                "condition": {
+                    "type": "string",
+                    "enum": [
+                        "new",
+                        "second"
+                    ]
+                },
+                "imageUrl": {
+                    "type": "string"
+                },
+                "isPurchaseable": {
+                    "type": "boolean"
+                },
+                "name": {
+                    "type": "string",
+                    "maxLength": 60,
+                    "minLength": 5
+                },
+                "price": {
+                    "type": "number"
+                },
+                "stock": {
+                    "type": "integer"
+                },
+                "tags": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
         "github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginRequest": {
             "type": "object",
             "required": [
