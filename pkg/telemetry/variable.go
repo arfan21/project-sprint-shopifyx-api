@@ -1,0 +1,10 @@
+package telemetry
+
+import "github.com/arfan21/shopifyx-api/config"
+
+var (
+	serviceName  = config.Get().Service.Name
+	collectorURL = config.Get().Otel.ExporterOTLPEndpoint
+	// insecure     = os.Getenv("INSECURE_MODE")
+	version = config.Get().Service.Version
+)
