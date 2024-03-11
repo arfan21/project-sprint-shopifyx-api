@@ -89,3 +89,39 @@ func (ctrl ControllerHTTP) Update(c *fiber.Ctx) error {
 		Message: "product updated successfully",
 	})
 }
+
+// @Summary Delete product
+// @Description Delete product
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "With the bearer started"
+// @Param id path string true "Product ID"
+// @Success 200 {object} pkgutil.HTTPResponse
+// @Failure 500 {object} pkgutil.HTTPResponse
+// @Router /v1/product/{id} [delete]
+func (ctrl ControllerHTTP) Delete(c *fiber.Ctx) error {
+	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
+	if !ok {
+		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "invalid or expired token",
+		})
+	}
+
+	idStr := c.Params("id")
+	id, err := uuid.Parse(idStr)
+	exception.PanicIfNeeded(err)
+
+	req := model.ProductDeleteRequest{
+		ID:     id,
+		UserID: claims.UserID,
+	}
+
+	err = ctrl.svc.Delete(c.Context(), req)
+	exception.PanicIfNeeded(err)
+
+	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
+		Message: "product deleted successfully",
+	})
+}

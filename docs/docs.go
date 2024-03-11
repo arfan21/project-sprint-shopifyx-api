@@ -92,6 +92,49 @@ const docTemplate = `{
             }
         },
         "/v1/product/{id}": {
+            "delete": {
+                "description": "Delete product",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "product"
+                ],
+                "summary": "Delete product",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "type": "string",
+                        "description": "Product ID",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    }
+                }
+            },
             "patch": {
                 "description": "Update product",
                 "consumes": [

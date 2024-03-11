@@ -16,3 +16,8 @@ type ProductRequest struct {
 	Tags           []string         `json:"tags" validate:"omitempty,dive,min=3,max=20"`
 	IsPurchaseable *bool            `json:"isPurchaseable" validate:"required"`
 }
+
+type ProductDeleteRequest struct {
+	ID     uuid.UUID `json:"id" validate:"required"`
+	UserID uuid.UUID `json:"-" validate:"required"`
+}

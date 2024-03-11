@@ -69,6 +69,8 @@ func TestRegister(t *testing.T) {
 		_, err := userSvc.Register(context.Background(), req)
 
 		assert.NoError(t, err)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, Username already registered", func(t *testing.T) {
@@ -86,6 +88,8 @@ func TestRegister(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameAlreadyRegistered)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, invalid request", func(t *testing.T) {
@@ -101,6 +105,8 @@ func TestRegister(t *testing.T) {
 
 		var validationErr *constant.ErrValidation
 		assert.ErrorAs(t, err, &validationErr)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 }
 
@@ -126,6 +132,8 @@ func TestLogin(t *testing.T) {
 
 		assert.NoError(t, pgxMock.ExpectationsWereMet())
 		assert.NoError(t, redisMock.ExpectationsWereMet())
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, username not found", func(t *testing.T) {
@@ -141,6 +149,8 @@ func TestLogin(t *testing.T) {
 		_, err := userSvc.Login(context.Background(), req)
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameOrPasswordInvalid)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, invalid password", func(t *testing.T) {
@@ -157,5 +167,7 @@ func TestLogin(t *testing.T) {
 		_, err := userSvc.Login(context.Background(), req)
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrUsernameOrPasswordInvalid)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 }

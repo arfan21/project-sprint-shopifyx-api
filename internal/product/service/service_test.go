@@ -67,6 +67,8 @@ func TestCreate(t *testing.T) {
 		err := productSvc.Create(context.Background(), req)
 
 		assert.NoError(t, err)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, validation error", func(t *testing.T) {
@@ -79,6 +81,8 @@ func TestCreate(t *testing.T) {
 		assert.Error(t, err)
 		var validationErr *constant.ErrValidation
 		assert.ErrorAs(t, err, &validationErr)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 }
 
@@ -105,10 +109,7 @@ func TestUpdate(t *testing.T) {
 			req.Tags = []string{}
 		}
 
-		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
-			WithArgs(req.ID).
-			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
-				AddRow(req.ID, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, req.UserID))
+		getByIDQueryMock(req.ID, req.UserID)
 
 		pgxMock.ExpectExec("UPDATE products (.+) WHERE id = (.+)").
 			WithArgs(req.Name, *req.Price, req.ImageUrl, entity.ProductCondition(req.Condition), req.Tags, *req.IsPurchaseable, req.ID).
@@ -117,6 +118,8 @@ func TestUpdate(t *testing.T) {
 		err := productSvc.Update(context.Background(), req)
 
 		assert.NoError(t, err)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, validation error", func(t *testing.T) {
@@ -129,6 +132,8 @@ func TestUpdate(t *testing.T) {
 		assert.Error(t, err)
 		var validationErr *constant.ErrValidation
 		assert.ErrorAs(t, err, &validationErr)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, product not found", func(t *testing.T) {
@@ -159,6 +164,8 @@ func TestUpdate(t *testing.T) {
 
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrProductNotFound)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 
 	t.Run("failed, user id not match", func(t *testing.T) {
@@ -181,14 +188,47 @@ func TestUpdate(t *testing.T) {
 			req.Tags = []string{}
 		}
 
-		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
-			WithArgs(req.ID).
-			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
-				AddRow(req.ID, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, uuid.New()))
+		getByIDQueryMock(req.ID, uuid.New())
 
 		err := productSvc.Update(context.Background(), req)
 
 		assert.Error(t, err)
 		assert.ErrorIs(t, err, constant.ErrAccessForbidden)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
+}
+
+func TestDelete(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		id := uuid.New()
+		userId := uuid.New()
+
+		req := model.ProductDeleteRequest{
+			ID:     id,
+			UserID: userId,
+		}
+
+		getByIDQueryMock(id, userId)
+
+		pgxMock.ExpectExec("DELETE FROM products WHERE id = (.+)").
+			WithArgs(req.ID).
+			WillReturnResult(pgxmock.NewResult("DELETE", 1))
+
+		err := productSvc.Delete(context.Background(), req)
+
+		assert.NoError(t, err)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+
+}
+
+func getByIDQueryMock(id, userId uuid.UUID) {
+	pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
+		WithArgs(id).
+		WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
+			AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, userId))
 }

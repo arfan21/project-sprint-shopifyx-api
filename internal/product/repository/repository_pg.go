@@ -101,3 +101,18 @@ func (r Repository) GetByID(ctx context.Context, id uuid.UUID) (product entity.P
 
 	return
 }
+
+func (r Repository) Delete(ctx context.Context, id uuid.UUID) (err error) {
+	query := `
+		DELETE FROM products
+		WHERE id = $1
+	`
+
+	_, err = r.db.Exec(ctx, query, id)
+	if err != nil {
+		err = fmt.Errorf("product.repository.Delete: failed to delete product: %w", err)
+		return
+	}
+
+	return
+}

@@ -67,19 +67,9 @@ func (s Service) Update(ctx context.Context, req model.ProductRequest) (err erro
 		return
 	}
 
-	resDB, err := s.repo.GetByID(ctx, req.ID)
+	err = s.validateProduct(ctx, req.ID, req.UserID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			err = constant.ErrProductNotFound
-		}
-		err = fmt.Errorf("product.service.Update: failed to get product by id: %w", err)
 		return
-	}
-
-	if resDB.UserID != req.UserID {
-		err = fmt.Errorf("product.service.Update: user id not match, %w", constant.ErrAccessForbidden)
-		return
-
 	}
 
 	data := entity.Product{
@@ -96,6 +86,45 @@ func (s Service) Update(ctx context.Context, req model.ProductRequest) (err erro
 	err = s.repo.Update(ctx, data)
 	if err != nil {
 		err = fmt.Errorf("product.service.Update: failed to update product: %w", err)
+		return
+	}
+
+	return
+}
+
+func (s Service) Delete(ctx context.Context, req model.ProductDeleteRequest) (err error) {
+	err = validation.Validate(req)
+	if err != nil {
+		err = fmt.Errorf("product.service.Update: failed to validate request: %w", err)
+		return
+	}
+
+	err = s.validateProduct(ctx, req.ID, req.UserID)
+	if err != nil {
+		return
+	}
+
+	err = s.repo.Delete(ctx, req.ID)
+	if err != nil {
+		err = fmt.Errorf("product.service.Delete: failed to delete product: %w", err)
+		return
+	}
+
+	return
+}
+
+func (s Service) validateProduct(ctx context.Context, id, userID uuid.UUID) (err error) {
+	resDB, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			err = constant.ErrProductNotFound
+		}
+		err = fmt.Errorf("product.service.Update: failed to get product by id: %w", err)
+		return
+	}
+
+	if resDB.UserID != userID {
+		err = fmt.Errorf("product.service.Update: user id not match, %w", constant.ErrAccessForbidden)
 		return
 	}
 
