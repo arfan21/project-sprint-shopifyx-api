@@ -71,3 +71,42 @@ func TestCreate(t *testing.T) {
 	})
 
 }
+
+func TestUpdate(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		req := model.BankAccountRequest{
+			BankAccountID:     uuid.New(),
+			UserID:            uuid.New(),
+			BankName:          "BCA",
+			BankAccountNumber: "1234567890",
+			BankAccountName:   "Test",
+		}
+		pgxMock.ExpectQuery("SELECT (.+)").
+			WithArgs(req.BankAccountID, req.UserID).
+			WillReturnRows(pgxmock.NewRows([]string{"id", "accountNumber", "accountHolder", "bankName", "userId"}).
+				AddRow(req.BankAccountID, req.BankAccountNumber, req.BankAccountName, req.BankName, req.UserID))
+		pgxMock.ExpectExec("UPDATE bank_accounts (.+)").
+			WithArgs(req.BankAccountNumber, req.BankAccountName, req.BankName, req.BankAccountID).
+			WillReturnResult(pgxmock.NewResult("UPDATE", 1))
+
+		err := bankaccountSvc.Update(context.Background(), req)
+		assert.NoError(t, err)
+	})
+
+	t.Run("failed, validation error", func(t *testing.T) {
+		req := model.BankAccountRequest{
+			BankAccountID:     uuid.New(),
+			UserID:            uuid.New(),
+			BankName:          "BCA",
+			BankAccountNumber: "1234567890",
+			BankAccountName:   "",
+		}
+
+		err := bankaccountSvc.Update(context.Background(), req)
+		assert.Error(t, err)
+		var validationErr *constant.ErrValidation
+		assert.ErrorAs(t, err, &validationErr)
+	})
+}

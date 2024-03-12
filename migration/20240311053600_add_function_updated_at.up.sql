@@ -3,7 +3,7 @@ CREATE OR REPLACE FUNCTION trigger_set_updated()
   LANGUAGE plpgsql
 AS $function$
 BEGIN
-	NEW.udpatedAt = NOW();
+	NEW.updatedAt = NOW();
 	RETURN NEW;
 END;
 $function$

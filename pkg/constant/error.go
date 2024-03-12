@@ -15,6 +15,7 @@ var (
 	ErrInvalidUUID               = errors.New("invalid uuid length or format")
 	ErrAccessForbidden           = &ErrWithCode{HTTPStatusCode: http.StatusForbidden, Message: "access forbidden"}
 	ErrProductNotFound           = &ErrWithCode{HTTPStatusCode: http.StatusNotFound, Message: "product not found"}
+	ErrBankAccountNotFound       = &ErrWithCode{HTTPStatusCode: http.StatusNotFound, Message: "bank account not found"}
 )
 
 type ErrWithCode struct {

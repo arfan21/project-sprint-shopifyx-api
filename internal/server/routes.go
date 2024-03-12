@@ -58,4 +58,5 @@ func (s Server) RoutesBankAccount(route fiber.Router, ctrl *bankaccountctrl.Cont
 	v1 := route.Group("/v1")
 	bankAccountV1 := v1.Group("/bank/account", middleware.JWTAuth)
 	bankAccountV1.Post("", ctrl.Create)
+	bankAccountV1.Patch("/:id", ctrl.Update)
 }

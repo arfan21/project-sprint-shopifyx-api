@@ -91,7 +91,7 @@ func (r Repository) GetByID(ctx context.Context, id, userId uuid.UUID) (bankAcco
 		WHERE id = $1 AND userId = $2
 	`
 
-	err = r.db.QueryRow(ctx, query, id).Scan(
+	err = r.db.QueryRow(ctx, query, id, userId).Scan(
 		&bankAccount.ID,
 		&bankAccount.AccountNumber,
 		&bankAccount.AccountHolder,
