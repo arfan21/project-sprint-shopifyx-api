@@ -54,6 +54,13 @@ definitions:
     - price
     - stock
     type: object
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductUpdateStockRequest:
+    properties:
+      stock:
+        type: integer
+    required:
+    - stock
+    type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.UserLoginRequest:
     properties:
       password:
@@ -267,6 +274,40 @@ paths:
       summary: Delete product
       tags:
       - product
+    get:
+      consumes:
+      - application/json
+      description: Get product detail
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse'
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Get product detail
+      tags:
+      - product
     patch:
       consumes:
       - application/json
@@ -306,6 +347,48 @@ paths:
           schema:
             $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
       summary: Update product
+      tags:
+      - product
+  /v1/product/{id}/stock:
+    post:
+      consumes:
+      - application/json
+      description: Update stock product
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Payload product update stock request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductUpdateStockRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+        "400":
+          description: Error validation field
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Update stock product
       tags:
       - product
   /v1/user/login:

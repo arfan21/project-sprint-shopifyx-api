@@ -193,3 +193,52 @@ func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.Pro
 
 	return
 }
+
+func (s Service) UpdateStock(ctx context.Context, req model.ProductUpdateStockRequest) (err error) {
+	err = validation.Validate(req)
+	if err != nil {
+		err = fmt.Errorf("product.service.UpdateStock: failed to validate request: %w", err)
+		return
+	}
+
+	err = s.validateProduct(ctx, req.ID, req.UserID)
+	if err != nil {
+		return
+	}
+
+	tx, err := s.repo.Begin(ctx)
+	if err != nil {
+		err = fmt.Errorf("product.service.UpdateStock: failed to begin transaction: %w", err)
+		return
+	}
+
+	defer func() {
+		if err != nil {
+			err = tx.Rollback(ctx)
+			if err != nil {
+				err = fmt.Errorf("product.service.UpdateStock: failed to rollback transaction: %w", err)
+				return
+			}
+			return
+		}
+		err = tx.Commit(ctx)
+		if err != nil {
+			err = fmt.Errorf("product.service.UpdateStock: failed to commit transaction: %w", err)
+			return
+		}
+	}()
+
+	_, err = s.repo.WithTx(tx).GetStockByIDForUpdate(ctx, req.ID)
+	if err != nil {
+		err = fmt.Errorf("product.service.UpdateStock: failed to get stock for update: %w", err)
+		return
+	}
+
+	err = s.repo.WithTx(tx).UpdateStock(ctx, req.ID, req.Stock)
+	if err != nil {
+		err = fmt.Errorf("product.service.UpdateStock: failed to update stock: %w", err)
+		return
+	}
+
+	return
+}

@@ -37,10 +37,11 @@ func (s Server) RoutesCustomer(route fiber.Router, ctrl *userctrl.ControllerHTTP
 
 func (s Server) RoutesProduct(route fiber.Router, ctrl *productctrl.ControllerHTTP) {
 	v1 := route.Group("/v1")
-	productV1 := v1.Group("/product", middleware.JWTAuth)
-	productV1.Post("", ctrl.Create)
-	productV1.Patch("/:id", ctrl.Update)
-	productV1.Delete("/:id", ctrl.Delete)
+	productV1 := v1.Group("/product")
+	productV1.Post("", middleware.JWTAuth, ctrl.Create)
+	productV1.Patch("/:id", middleware.JWTAuth, ctrl.Update)
+	productV1.Delete("/:id", middleware.JWTAuth, ctrl.Delete)
 	productV1.Get("", ctrl.GetList)
 	productV1.Get("/:id", ctrl.GetDetailByID)
+	productV1.Post("/:id/stock", middleware.JWTAuth, ctrl.UpdateStock)
 }

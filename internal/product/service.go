@@ -13,4 +13,5 @@ type Service interface {
 	Delete(ctx context.Context, req model.ProductDeleteRequest) (err error)
 	GetList(ctx context.Context, req model.ProductGetListRequest) (res []model.ProductGetResponse, total int, err error)
 	GetDetailByID(ctx context.Context, id uuid.UUID) (res model.ProductGetResponse, err error)
+	UpdateStock(ctx context.Context, req model.ProductUpdateStockRequest) (err error)
 }

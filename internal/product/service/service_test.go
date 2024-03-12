@@ -259,3 +259,69 @@ func TestGetList(t *testing.T) {
 		assert.NoError(t, pgxMock.ExpectationsWereMet())
 	})
 }
+
+func TestGetDetail(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		id := uuid.New()
+
+		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
+			WithArgs(id).
+			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
+				AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, uuid.New()))
+
+		res, err := productSvc.GetDetailByID(context.Background(), id)
+
+		assert.NoError(t, err)
+		assert.NotNil(t, res)
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+
+	t.Run("failed, product not found", func(t *testing.T) {
+		id := uuid.New()
+
+		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
+			WithArgs(id).
+			WillReturnError(constant.ErrProductNotFound)
+
+		_, err := productSvc.GetDetailByID(context.Background(), id)
+
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, constant.ErrProductNotFound)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+}
+
+func TestUpdateStock(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		req := model.ProductUpdateStockRequest{
+			ID:     uuid.New(),
+			UserID: uuid.New(),
+			Stock:  10,
+		}
+
+		getByIDQueryMock(req.ID, req.UserID)
+
+		pgxMock.ExpectBegin()
+		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+) FOR UPDATE").
+			WithArgs(req.ID).
+			WillReturnRows(pgxMock.NewRows([]string{"stock"}).
+				AddRow(10))
+
+		pgxMock.ExpectExec("UPDATE products (.+) WHERE id = (.+)").
+			WithArgs(req.Stock, req.ID).
+			WillReturnResult(pgxmock.NewResult("UPDATE", 1))
+		pgxMock.ExpectCommit()
+
+		err := productSvc.UpdateStock(context.Background(), req)
+
+		assert.NoError(t, err)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+
+}

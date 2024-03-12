@@ -186,3 +186,41 @@ func (ctrl ControllerHTTP) GetDetailByID(c *fiber.Ctx) error {
 		Data: res,
 	})
 }
+
+// @Summary Update stock product
+// @Description Update stock product
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "With the bearer started"
+// @Param body body model.ProductUpdateStockRequest true "Payload product update stock request"
+// @Success 200 {object} pkgutil.HTTPResponse
+// @Failure 400 {object} pkgutil.HTTPResponse{data=[]pkgutil.ErrValidationResponse} "Error validation field"
+// @Failure 500 {object} pkgutil.HTTPResponse
+// @Router /v1/product/{id}/stock [post]
+func (ctrl ControllerHTTP) UpdateStock(c *fiber.Ctx) error {
+	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
+	if !ok {
+		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "invalid or expired token",
+		})
+	}
+
+	var req model.ProductUpdateStockRequest
+	err := c.BodyParser(&req)
+	exception.PanicIfNeeded(err)
+
+	idStr := c.Params("id")
+	req.ID, err = uuid.Parse(idStr)
+	exception.PanicIfNeeded(err)
+
+	req.UserID = claims.UserID
+
+	err = ctrl.svc.UpdateStock(c.UserContext(), req)
+	exception.PanicIfNeeded(err)
+
+	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
+		Message: "stock updated successfully",
+	})
+}

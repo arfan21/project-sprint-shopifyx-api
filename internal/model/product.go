@@ -50,3 +50,9 @@ type ProductGetResponse struct {
 	IsPurchaseable bool      `json:"isPurchaseable"`
 	PurchaseCount  int       `json:"purchaseCount"`
 }
+
+type ProductUpdateStockRequest struct {
+	ID     uuid.UUID `json:"-" validate:"required"`
+	UserID uuid.UUID `json:"-" validate:"required"`
+	Stock  int       `json:"stock" validate:"required"`
+}

@@ -284,7 +284,40 @@ func (r Repository) GetDetailByID(ctx context.Context, id uuid.UUID) (product en
 		&product.UserID,
 	)
 	if err != nil {
-		err = fmt.Errorf("product.repository.GetByID: failed to get product by id: %w", err)
+		err = fmt.Errorf("product.repository.GetDetailByID: failed to get product by id: %w", err)
+		return
+	}
+
+	return
+}
+
+func (r Repository) GetStockByIDForUpdate(ctx context.Context, id uuid.UUID) (stock int, err error) {
+	query := `
+		SELECT stock
+		FROM products
+		WHERE id = $1
+		FOR UPDATE
+	`
+
+	err = r.db.QueryRow(ctx, query, id).Scan(&stock)
+	if err != nil {
+		err = fmt.Errorf("product.repository.GetStockByIDForUpdate: failed to get stock by id for update: %w", err)
+		return
+	}
+
+	return
+}
+
+func (r Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock int) (err error) {
+	query := `
+		UPDATE products
+		SET stock = $1
+		WHERE id = $2
+	`
+
+	_, err = r.db.Exec(ctx, query, stock, id)
+	if err != nil {
+		err = fmt.Errorf("product.repository.UpdateStock: failed to update stock: %w", err)
 		return
 	}
 
