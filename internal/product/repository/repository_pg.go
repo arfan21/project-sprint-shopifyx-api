@@ -32,7 +32,7 @@ func (r Repository) WithTx(tx pgx.Tx) *Repository {
 
 func (r Repository) Create(ctx context.Context, data entity.Product) (err error) {
 	query := `
-		INSERT INTO products (id, name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id)
+		INSERT INTO products (id, name, price, imageUrl, stock, condition, tags, isPurchaseable, userId)
 		VALUES ($1, $2, $3, $4, $5, $6, $7, $8,  $9)
 	`
 
@@ -81,7 +81,7 @@ func (r Repository) Update(ctx context.Context, data entity.Product) (err error)
 
 func (r Repository) GetByID(ctx context.Context, id uuid.UUID) (product entity.Product, err error) {
 	query := `
-		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id
+		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, userId
 		FROM products
 		WHERE id = $1
 	`
@@ -129,7 +129,7 @@ func (r Repository) queryGetListWithFilter(ctx context.Context, query string, fi
 		arrArgs = append(arrArgs, filter.UserID)
 		lenArgsStr := strconv.Itoa(len(arrArgs))
 
-		whereQuery += fmt.Sprintf("user_id = $%s %s", lenArgsStr, andStatement)
+		whereQuery += fmt.Sprintf("userId = $%s %s", lenArgsStr, andStatement)
 	}
 
 	if filter.Condition != "" {
@@ -267,7 +267,7 @@ func (r Repository) GetTotal(ctx context.Context, filter model.ProductGetListReq
 
 func (r Repository) GetDetailByID(ctx context.Context, id uuid.UUID) (product entity.Product, err error) {
 	query := `
-		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id
+		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, userId
 		FROM products
 		WHERE id = $1
 	`

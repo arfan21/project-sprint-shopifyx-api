@@ -16,7 +16,7 @@ const (
 
 type Product struct {
 	ID             uuid.UUID        `json:"id"`
-	UserID         uuid.UUID        `json:"user_id"`
+	UserID         uuid.UUID        `json:"userId"`
 	Name           string           `json:"name"`
 	Price          decimal.Decimal  `json:"price"`
 	ImageUrl       string           `json:"imageUrl"`
@@ -24,8 +24,8 @@ type Product struct {
 	Condition      ProductCondition `json:"condition"`
 	Tags           []string         `json:"tags"`
 	IsPurchaseable bool             `json:"isPurchaseable"`
-	CreatedAt      time.Time        `json:"created_at"`
-	UpdatedAt      time.Time        `json:"updated_at"`
+	CreatedAt      time.Time        `json:"createdAt"`
+	UpdatedAt      time.Time        `json:"updatedAt"`
 }
 
 func (Product) TableName() string {

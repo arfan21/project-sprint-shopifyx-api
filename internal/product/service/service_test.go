@@ -229,7 +229,7 @@ func TestDelete(t *testing.T) {
 func getByIDQueryMock(id, userId uuid.UUID) {
 	pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
 		WithArgs(id).
-		WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
+		WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "userId"}).
 			AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, userId))
 }
 
@@ -268,7 +268,7 @@ func TestGetDetail(t *testing.T) {
 
 		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
 			WithArgs(id).
-			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
+			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "userId"}).
 				AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, uuid.New()))
 
 		res, err := productSvc.GetDetailByID(context.Background(), id)
