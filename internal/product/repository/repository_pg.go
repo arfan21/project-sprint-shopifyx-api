@@ -264,3 +264,29 @@ func (r Repository) GetTotal(ctx context.Context, filter model.ProductGetListReq
 
 	return
 }
+
+func (r Repository) GetDetailByID(ctx context.Context, id uuid.UUID) (product entity.Product, err error) {
+	query := `
+		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, user_id
+		FROM products
+		WHERE id = $1
+	`
+
+	err = r.db.QueryRow(ctx, query, id).Scan(
+		&product.ID,
+		&product.Name,
+		&product.Price,
+		&product.ImageUrl,
+		&product.Stock,
+		&product.Condition,
+		&product.Tags,
+		&product.IsPurchaseable,
+		&product.UserID,
+	)
+	if err != nil {
+		err = fmt.Errorf("product.repository.GetByID: failed to get product by id: %w", err)
+		return
+	}
+
+	return
+}

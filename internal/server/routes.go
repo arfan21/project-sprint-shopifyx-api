@@ -42,4 +42,5 @@ func (s Server) RoutesProduct(route fiber.Router, ctrl *productctrl.ControllerHT
 	productV1.Patch("/:id", ctrl.Update)
 	productV1.Delete("/:id", ctrl.Delete)
 	productV1.Get("", ctrl.GetList)
+	productV1.Get("/:id", ctrl.GetDetailByID)
 }

@@ -169,3 +169,27 @@ func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (
 
 	return
 }
+
+func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.ProductGetResponse, err error) {
+	resDB, err := s.repo.GetDetailByID(ctx, id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			err = constant.ErrProductNotFound
+		}
+		err = fmt.Errorf("product.service.GetDetailByID: failed to get product by id: %w", err)
+		return
+	}
+
+	res = model.ProductGetResponse{
+		ProductID:      resDB.ID,
+		Name:           resDB.Name,
+		Price:          resDB.Price.InexactFloat64(),
+		ImageUrl:       resDB.ImageUrl,
+		Stock:          resDB.Stock,
+		Condition:      string(resDB.Condition),
+		Tags:           resDB.Tags,
+		IsPurchaseable: resDB.IsPurchaseable,
+	}
+
+	return
+}

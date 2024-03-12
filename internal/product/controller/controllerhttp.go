@@ -163,3 +163,26 @@ func (ctrl ControllerHTTP) GetList(c *fiber.Ctx) error {
 		},
 	})
 }
+
+// @Summary Get product detail
+// @Description Get product detail
+// @Tags product
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "With the bearer started"
+// @Param id path string true "Product ID"
+// @Success 200 {object} pkgutil.HTTPResponse{data=model.ProductGetResponse}
+// @Failure 500 {object} pkgutil.HTTPResponse
+// @Router /v1/product/{id} [get]
+func (ctrl ControllerHTTP) GetDetailByID(c *fiber.Ctx) error {
+	idStr := c.Params("id")
+	id, err := uuid.Parse(idStr)
+	exception.PanicIfNeeded(err)
+
+	res, err := ctrl.svc.GetDetailByID(c.UserContext(), id)
+	exception.PanicIfNeeded(err)
+
+	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
+		Data: res,
+	})
+}
