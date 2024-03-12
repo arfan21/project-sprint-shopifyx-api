@@ -1,1 +1,0 @@
-CREATE TYPE product_condition AS ENUM ('new', 'second');

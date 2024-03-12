@@ -1,3 +1,5 @@
+CREATE TYPE product_condition AS ENUM ('new', 'second');
+
 CREATE TABLE
     IF NOT EXISTS products(
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -14,3 +16,9 @@ CREATE TABLE
 
     CONSTRAINT fk_user_id_users FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE  
 );
+
+CREATE TRIGGER update_products_updated_at
+  BEFORE UPDATE
+  ON products
+  FOR EACH ROW
+  EXECUTE PROCEDURE trigger_set_updated();

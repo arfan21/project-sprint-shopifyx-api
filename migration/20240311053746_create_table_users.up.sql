@@ -7,3 +7,9 @@ CREATE TABLE
         created_at TIMESTAMP DEFAULT now (),
         updated_at TIMESTAMP DEFAULT now ()
     );
+
+CREATE TRIGGER update_users_updated_at
+  BEFORE UPDATE
+  ON users
+  FOR EACH ROW
+  EXECUTE PROCEDURE trigger_set_updated();
