@@ -130,3 +130,42 @@ func (s Service) validateProduct(ctx context.Context, id, userID uuid.UUID) (err
 
 	return
 }
+
+func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (res []model.ProductGetResponse, total int, err error) {
+	err = validation.Validate(req)
+	if err != nil {
+		err = fmt.Errorf("product.service.GetList: failed to validate request: %w", err)
+		return
+	}
+
+	resDB, err := s.repo.GetList(ctx, req)
+	if err != nil {
+		err = fmt.Errorf("product.service.GetList: failed to get product list: %w", err)
+		return
+	}
+
+	res = make([]model.ProductGetResponse, len(resDB))
+
+	for i, v := range resDB {
+		res[i] = model.ProductGetResponse{
+			ProductID:      v.ID,
+			Name:           v.Name,
+			Price:          v.Price.InexactFloat64(),
+			ImageUrl:       v.ImageUrl,
+			Stock:          v.Stock,
+			Condition:      string(v.Condition),
+			Tags:           v.Tags,
+			IsPurchaseable: v.IsPurchaseable,
+		}
+	}
+
+	total, err = s.repo.GetTotal(ctx, req)
+	if err != nil {
+		err = fmt.Errorf("product.service.GetList: failed to get total product: %w", err)
+		return
+	}
+
+	// TODO: add get purchase count each product
+
+	return
+}

@@ -232,3 +232,30 @@ func getByIDQueryMock(id, userId uuid.UUID) {
 		WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "user_id"}).
 			AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, userId))
 }
+
+func TestGetList(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		req := model.ProductGetListRequest{
+			Offset: 0,
+			Limit:  10,
+		}
+
+		pgxMock.ExpectQuery("SELECT (.+) FROM products (.+)").
+			WithArgs(0, req.Limit, req.Offset).
+			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable"}).
+				AddRow(uuid.New(), "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true))
+
+		pgxMock.ExpectQuery("SELECT COUNT(.+) FROM products (.+)").
+			WithArgs(0).
+			WillReturnRows(pgxMock.NewRows([]string{"count"}).AddRow(1))
+
+		res, total, err := productSvc.GetList(context.Background(), req)
+
+		assert.NoError(t, err)
+		assert.Equal(t, 1, total)
+		assert.Equal(t, 1, len(res))
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+}

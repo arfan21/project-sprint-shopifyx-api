@@ -1,5 +1,28 @@
 basePath: /
 definitions:
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse:
+    properties:
+      condition:
+        type: string
+      imageUrl:
+        type: string
+      isPurchaseable:
+        type: boolean
+      name:
+        type: string
+      price:
+        type: number
+      productId:
+        type: string
+      purchaseCount:
+        type: integer
+      stock:
+        type: integer
+      tags:
+        items:
+          type: string
+        type: array
+    type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductRequest:
     properties:
       condition:
@@ -82,6 +105,7 @@ definitions:
       message:
         example: Success
         type: string
+      meta: {}
     type: object
 host: localhost:8080
 info:
@@ -97,6 +121,81 @@ info:
   version: "1.0"
 paths:
   /v1/product:
+    get:
+      consumes:
+      - application/json
+      description: Get product list
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Get product list by user
+        in: query
+        name: userOnly
+        type: boolean
+      - description: Limit
+        in: query
+        name: limit
+        type: integer
+      - description: Offset
+        in: query
+        name: offset
+        type: integer
+      - description: Condition
+        in: query
+        name: condition
+        type: string
+      - description: Tags
+        in: query
+        name: tags
+        type: string
+      - description: Show empty stock
+        in: query
+        name: showEmptyStock
+        type: boolean
+      - description: Max price
+        in: query
+        name: maxPrice
+        type: number
+      - description: Min price
+        in: query
+        name: minPrice
+        type: number
+      - description: Sort by
+        in: query
+        name: sortBy
+        type: string
+      - description: Order by
+        in: query
+        name: orderBy
+        type: string
+      - description: Search
+        in: query
+        name: search
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Get product list
+      tags:
+      - product
     post:
       consumes:
       - application/json

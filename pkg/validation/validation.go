@@ -33,26 +33,27 @@ func Validate[T any](modelValidate T) error {
 	validateOnce.Do(func() {
 		validate = validator.New()
 
+		validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
+			name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
+			if name == "-" {
+				return ""
+			}
+			return name
+		})
+
 		validate.RegisterCustomTypeFunc(func(field reflect.Value) interface{} {
 			if valuer, ok := field.Interface().(decimal.Decimal); ok {
 				return valuer.String()
 			}
 			return nil
 		}, decimal.Decimal{})
+
 	})
 
 	translatorOnce.Do(func() {
 		translatorUni, _ := uni.GetTranslator("en")
 		translator = translatorUni
 		en_translations.RegisterDefaultTranslations(validate, translator)
-	})
-
-	validate.RegisterTagNameFunc(func(fld reflect.StructField) string {
-		name := strings.SplitN(fld.Tag.Get("json"), ",", 2)[0]
-		if name == "-" {
-			return ""
-		}
-		return name
 	})
 
 	err := validate.Struct(modelValidate)

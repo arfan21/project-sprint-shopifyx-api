@@ -4,6 +4,7 @@ type HTTPResponse struct {
 	Code    int    `json:"-"`
 	Message string `json:"message,omitempty" example:"Success"`
 	Data    any    `json:"data,omitempty" `
+	Meta    any    `json:"meta,omitempty" `
 }
 
 type PaginationResponse struct {
@@ -17,4 +18,10 @@ type PaginationResponse struct {
 type ErrValidationResponse struct {
 	Field   string `json:"field"`
 	Message string `json:"message"`
+}
+
+type MetaResponse struct {
+	Total  int `json:"total" example:"1"`
+	Offset int `json:"offset" example:"0"`
+	Limit  int `json:"limit" example:"10"`
 }

@@ -41,7 +41,7 @@ func Timeout(duration time.Duration, opt ...OptFunc) fiber.Handler {
 				return c.Next()
 			}
 		}
-		ctx, cancel := context.WithTimeout(c.Context(), config.duration)
+		ctx, cancel := context.WithTimeout(c.UserContext(), config.duration)
 		defer cancel()
 		c.SetUserContext(ctx)
 		return c.Next()
