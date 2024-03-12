@@ -143,7 +143,7 @@ func (r Repository) queryGetListWithFilter(ctx context.Context, query string, fi
 		arrArgs = append(arrArgs, filter.Tags)
 		lenArgsStr := strconv.Itoa(len(arrArgs))
 
-		whereQuery += fmt.Sprintf("tags = ANY($%s) %s", lenArgsStr, andStatement)
+		whereQuery += fmt.Sprintf("tags && $%s %s", lenArgsStr, andStatement)
 	}
 
 	if !filter.ShowEmptyStock {
@@ -200,6 +200,7 @@ func (r Repository) queryGetListWithFilter(ctx context.Context, query string, fi
 		arrArgs = append(arrArgs, filter.Offset)
 		query += fmt.Sprintf("OFFSET $%d ", len(arrArgs))
 	}
+
 	return r.db.Query(ctx, query, arrArgs...)
 }
 
