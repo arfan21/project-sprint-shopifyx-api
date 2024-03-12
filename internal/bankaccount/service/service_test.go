@@ -140,3 +140,20 @@ func TestDelete(t *testing.T) {
 		assert.Error(t, err)
 	})
 }
+
+func TestGetListByUserID(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		userId := uuid.New()
+		pgxMock.ExpectQuery("SELECT (.+)").
+			WithArgs(userId).
+			WillReturnRows(pgxmock.NewRows([]string{"id", "accountNumber", "accountHolder", "bankName", "userId"}).
+				AddRow(uuid.New(), "1234567890", "Test", "BCA", userId))
+
+		res, err := bankaccountSvc.GetListByUserID(context.Background(), userId)
+		assert.NoError(t, err)
+		assert.NotEmpty(t, res)
+	})
+
+}
