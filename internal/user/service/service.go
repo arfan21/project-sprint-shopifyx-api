@@ -45,7 +45,7 @@ func (s Service) Register(ctx context.Context, req model.UserRegisterRequest) (r
 
 	id, err := uuid.NewV7()
 	if err != nil {
-		err = fmt.Errorf("product.service.Create: failed to generate product id: %w", err)
+		err = fmt.Errorf("user.service.Create: failed to generate product id: %w", err)
 		return
 	}
 

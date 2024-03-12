@@ -1,5 +1,20 @@
 basePath: /
 definitions:
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountRequest:
+    properties:
+      bankAccountId:
+        type: string
+      bankAccountName:
+        type: string
+      bankAccountNumber:
+        type: string
+      bankName:
+        type: string
+    required:
+    - bankAccountName
+    - bankAccountNumber
+    - bankName
+    type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse:
     properties:
       condition:
@@ -127,17 +142,54 @@ info:
   title: project-sprint-shopifyx-api
   version: "1.0"
 paths:
-  /v1/product:
-    get:
+  /v1//v1/bank/account:
+    post:
       consumes:
       - application/json
-      description: Get product list
+      description: Create Bank Account
       parameters:
       - description: With the bearer started
         in: header
         name: Authorization
         required: true
         type: string
+      - description: Payload bank account create request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+        "400":
+          description: Error validation field
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Create Bank Account
+      tags:
+      - Bank Account
+  /v1/product:
+    get:
+      consumes:
+      - application/json
+      description: Get product list
+      parameters:
       - description: Get product list by user
         in: query
         name: userOnly
@@ -279,11 +331,6 @@ paths:
       - application/json
       description: Get product detail
       parameters:
-      - description: With the bearer started
-        in: header
-        name: Authorization
-        required: true
-        type: string
       - description: Product ID
         in: path
         name: id

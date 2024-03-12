@@ -23,6 +23,74 @@ const docTemplate = `{
     "host": "{{.Host}}",
     "basePath": "{{.BasePath}}",
     "paths": {
+        "/v1//v1/bank/account": {
+            "post": {
+                "description": "Create Bank Account",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bank Account"
+                ],
+                "summary": "Create Bank Account",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    },
+                    {
+                        "description": "Payload bank account create request",
+                        "name": "body",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountRequest"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    },
+                    "400": {
+                        "description": "Error validation field",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/product": {
             "get": {
                 "description": "Get product list",
@@ -37,13 +105,6 @@ const docTemplate = `{
                 ],
                 "summary": "Get product list",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "With the bearer started",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "boolean",
                         "description": "Get product list by user",
@@ -222,13 +283,6 @@ const docTemplate = `{
                 ],
                 "summary": "Get product detail",
                 "parameters": [
-                    {
-                        "type": "string",
-                        "description": "With the bearer started",
-                        "name": "Authorization",
-                        "in": "header",
-                        "required": true
-                    },
                     {
                         "type": "string",
                         "description": "Product ID",
@@ -590,6 +644,28 @@ const docTemplate = `{
         }
     },
     "definitions": {
+        "github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountRequest": {
+            "type": "object",
+            "required": [
+                "bankAccountName",
+                "bankAccountNumber",
+                "bankName"
+            ],
+            "properties": {
+                "bankAccountId": {
+                    "type": "string"
+                },
+                "bankAccountName": {
+                    "type": "string"
+                },
+                "bankAccountNumber": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                }
+            }
+        },
         "github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse": {
             "type": "object",
             "properties": {

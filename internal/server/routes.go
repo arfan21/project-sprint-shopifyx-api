@@ -1,6 +1,9 @@
 package server
 
 import (
+	bankaccountctrl "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/controller"
+	bankaccountrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/repository"
+	bankaccountsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/service"
 	productctrl "github.com/arfan21/project-sprint-shopifyx-api/internal/product/controller"
 	productrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/product/repository"
 	productsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/product/service"
@@ -24,8 +27,13 @@ func (s *Server) Routes() {
 	productSvc := productsvc.New(productRepo)
 	productCtrl := productctrl.New(productSvc)
 
+	bankAccountRepo := bankaccountrepo.New(s.db)
+	bankAccountSvc := bankaccountsvc.New(bankAccountRepo)
+	bankAccountCtrl := bankaccountctrl.New(bankAccountSvc)
+
 	s.RoutesCustomer(api, userCtrl)
 	s.RoutesProduct(api, productCtrl)
+	s.RoutesBankAccount(api, bankAccountCtrl)
 }
 
 func (s Server) RoutesCustomer(route fiber.Router, ctrl *userctrl.ControllerHTTP) {
@@ -44,4 +52,10 @@ func (s Server) RoutesProduct(route fiber.Router, ctrl *productctrl.ControllerHT
 	productV1.Get("", ctrl.GetList)
 	productV1.Get("/:id", ctrl.GetDetailByID)
 	productV1.Post("/:id/stock", middleware.JWTAuth, ctrl.UpdateStock)
+}
+
+func (s Server) RoutesBankAccount(route fiber.Router, ctrl *bankaccountctrl.ControllerHTTP) {
+	v1 := route.Group("/v1")
+	bankAccountV1 := v1.Group("/bank/account", middleware.JWTAuth)
+	bankAccountV1.Post("", ctrl.Create)
 }

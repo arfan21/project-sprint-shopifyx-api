@@ -131,7 +131,6 @@ func (ctrl ControllerHTTP) Delete(c *fiber.Ctx) error {
 // @Tags product
 // @Accept json
 // @Produce json
-// @Param Authorization header string true "With the bearer started"
 // @Param userOnly query bool false "Get product list by user"
 // @Param limit query int false "Limit"
 // @Param offset query int false "Offset"
@@ -169,7 +168,6 @@ func (ctrl ControllerHTTP) GetList(c *fiber.Ctx) error {
 // @Tags product
 // @Accept json
 // @Produce json
-// @Param Authorization header string true "With the bearer started"
 // @Param id path string true "Product ID"
 // @Success 200 {object} pkgutil.HTTPResponse{data=model.ProductGetResponse}
 // @Failure 500 {object} pkgutil.HTTPResponse
