@@ -85,3 +85,22 @@ func (s Service) Update(ctx context.Context, req model.BankAccountRequest) (err 
 
 	return
 }
+
+func (s Service) Delete(ctx context.Context, id, userId uuid.UUID) (err error) {
+	_, err = s.repo.GetByID(ctx, id, userId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			err = constant.ErrBankAccountNotFound
+		}
+		err = fmt.Errorf("bankaccount.service.Delete: failed to get bank account: %w", err)
+		return
+	}
+
+	err = s.repo.Delete(ctx, id)
+	if err != nil {
+		err = fmt.Errorf("bankaccount.service.Delete: failed to delete bank account: %w", err)
+		return
+	}
+
+	return
+}

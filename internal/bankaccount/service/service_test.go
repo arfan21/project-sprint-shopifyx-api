@@ -110,3 +110,33 @@ func TestUpdate(t *testing.T) {
 		assert.ErrorAs(t, err, &validationErr)
 	})
 }
+
+func TestDelete(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		id := uuid.New()
+		userId := uuid.New()
+		pgxMock.ExpectQuery("SELECT (.+)").
+			WithArgs(id, userId).
+			WillReturnRows(pgxmock.NewRows([]string{"id", "accountNumber", "accountHolder", "bankName", "userId"}).
+				AddRow(id, "1234567890", "Test", "BCA", userId))
+		pgxMock.ExpectExec("DELETE FROM bank_accounts (.+)").
+			WithArgs(id).
+			WillReturnResult(pgxmock.NewResult("DELETE", 1))
+
+		err := bankaccountSvc.Delete(context.Background(), id, userId)
+		assert.NoError(t, err)
+	})
+
+	t.Run("failed, bank account not found", func(t *testing.T) {
+		id := uuid.New()
+		userId := uuid.New()
+		pgxMock.ExpectQuery("SELECT (.+)").
+			WithArgs(id, userId).
+			WillReturnError(constant.ErrBankAccountNotFound)
+
+		err := bankaccountSvc.Delete(context.Background(), id, userId)
+		assert.Error(t, err)
+	})
+}
