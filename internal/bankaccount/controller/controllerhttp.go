@@ -122,3 +122,30 @@ func (ctrl ControllerHTTP) Delete(c *fiber.Ctx) error {
 		Message: "bank account deleted successfully",
 	})
 }
+
+// @Summary Get Bank Accounts
+// @Description Get Bank Accounts
+// @Tags Bank Account
+// @Accept json
+// @Produce json
+// @Param Authorization header string true "With the bearer started"
+// @Success 200 {object} pkgutil.HTTPResponse{data=[]model.BankAccountResponse}
+// @Failure 500 {object} pkgutil.HTTPResponse
+// @Router /v1/bank/account [get]
+func (ctrl ControllerHTTP) GetList(c *fiber.Ctx) error {
+	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
+	if !ok {
+		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
+		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+			"message": "invalid or expired token",
+		})
+	}
+
+	res, err := ctrl.svc.GetListByUserID(c.UserContext(), claims.UserID)
+	exception.PanicIfNeeded(err)
+
+	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
+		Message: "success",
+		Data:    res,
+	})
+}

@@ -91,6 +91,59 @@ const docTemplate = `{
                 }
             }
         },
+        "/v1/bank/account": {
+            "get": {
+                "description": "Get Bank Accounts",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Bank Account"
+                ],
+                "summary": "Get Bank Accounts",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "With the bearer started",
+                        "name": "Authorization",
+                        "in": "header",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "allOf": [
+                                {
+                                    "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                                },
+                                {
+                                    "type": "object",
+                                    "properties": {
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountResponse"
+                                            }
+                                        }
+                                    }
+                                }
+                            ]
+                        }
+                    },
+                    "500": {
+                        "description": "Internal Server Error",
+                        "schema": {
+                            "$ref": "#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse"
+                        }
+                    }
+                }
+            }
+        },
         "/v1/bank/account/{id}": {
             "delete": {
                 "description": "Delete Bank Account",
@@ -769,6 +822,23 @@ const docTemplate = `{
                 "bankAccountNumber",
                 "bankName"
             ],
+            "properties": {
+                "bankAccountId": {
+                    "type": "string"
+                },
+                "bankAccountName": {
+                    "type": "string"
+                },
+                "bankAccountNumber": {
+                    "type": "string"
+                },
+                "bankName": {
+                    "type": "string"
+                }
+            }
+        },
+        "github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountResponse": {
+            "type": "object",
             "properties": {
                 "bankAccountId": {
                     "type": "string"

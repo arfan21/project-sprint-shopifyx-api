@@ -9,3 +9,10 @@ type BankAccountRequest struct {
 	BankAccountID     uuid.UUID `json:"bankAccountId"`
 	UserID            uuid.UUID `json:"-"`
 }
+
+type BankAccountResponse struct {
+	BankName          string    `json:"bankName" `
+	BankAccountName   string    `json:"bankAccountName" `
+	BankAccountNumber string    `json:"bankAccountNumber"`
+	BankAccountID     uuid.UUID `json:"bankAccountId"`
+}

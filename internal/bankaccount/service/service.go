@@ -104,3 +104,24 @@ func (s Service) Delete(ctx context.Context, id, userId uuid.UUID) (err error) {
 
 	return
 }
+
+func (s Service) GetListByUserID(ctx context.Context, userId uuid.UUID) (res []model.BankAccountResponse, err error) {
+	resDB, err := s.repo.GetListByUserID(ctx, userId)
+	if err != nil {
+		err = fmt.Errorf("bankaccount.service.GetListByUserID: failed to get bank account by user id: %w", err)
+		return
+	}
+
+	res = make([]model.BankAccountResponse, len(resDB))
+
+	for i, v := range resDB {
+		res[i] = model.BankAccountResponse{
+			BankAccountID:     v.ID,
+			BankName:          v.BankName,
+			BankAccountNumber: v.AccountNumber,
+			BankAccountName:   v.AccountHolder,
+		}
+	}
+
+	return
+}

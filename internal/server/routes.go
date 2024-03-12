@@ -60,4 +60,5 @@ func (s Server) RoutesBankAccount(route fiber.Router, ctrl *bankaccountctrl.Cont
 	bankAccountV1.Post("", ctrl.Create)
 	bankAccountV1.Patch("/:id", ctrl.Update)
 	bankAccountV1.Delete("/:id", ctrl.Delete)
+	bankAccountV1.Get("", ctrl.GetList)
 }

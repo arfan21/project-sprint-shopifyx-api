@@ -15,6 +15,17 @@ definitions:
     - bankAccountNumber
     - bankName
     type: object
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountResponse:
+    properties:
+      bankAccountId:
+        type: string
+      bankAccountName:
+        type: string
+      bankAccountNumber:
+        type: string
+      bankName:
+        type: string
+    type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse:
     properties:
       condition:
@@ -182,6 +193,38 @@ paths:
           schema:
             $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
       summary: Create Bank Account
+      tags:
+      - Bank Account
+  /v1/bank/account:
+    get:
+      consumes:
+      - application/json
+      description: Get Bank Accounts
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.BankAccountResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Get Bank Accounts
       tags:
       - Bank Account
   /v1/bank/account/{id}:
