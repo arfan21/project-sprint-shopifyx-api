@@ -12,4 +12,5 @@ type Service interface {
 	Update(ctx context.Context, req model.BankAccountRequest) (err error)
 	Delete(ctx context.Context, id, userId uuid.UUID) (err error)
 	GetListByUserID(ctx context.Context, userId uuid.UUID) (res []model.BankAccountResponse, err error)
+	GetByID(ctx context.Context, id, userId uuid.UUID) (res model.BankAccountResponse, err error)
 }

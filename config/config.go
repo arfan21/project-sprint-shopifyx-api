@@ -154,5 +154,6 @@ func initDefaultValue(v *viper.Viper) {
 	v.SetDefault("OTEL_INSECURE", true)
 	v.SetDefault("OTEL_EXPORTER_PROMETHEUS_PATH", "/metrics")
 	v.SetDefault("OTEL_EXPORTER_PROMETHEUS_PORT", "2223")
+	v.SetDefault("JWT_SECRET", "secret")
 	v.SetDefault("JWT_EXPIRE_IN", 120)
 }

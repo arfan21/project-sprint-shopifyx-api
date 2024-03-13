@@ -8,6 +8,7 @@ import (
 
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/entity"
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/model"
+	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	dbpostgres "github.com/arfan21/project-sprint-shopifyx-api/pkg/db/postgres"
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5"
@@ -319,6 +320,27 @@ func (r Repository) UpdateStock(ctx context.Context, id uuid.UUID, stock int) (e
 	_, err = r.db.Exec(ctx, query, stock, id)
 	if err != nil {
 		err = fmt.Errorf("product.repository.UpdateStock: failed to update stock: %w", err)
+		return
+	}
+
+	return
+}
+
+func (r Repository) ReduceStock(ctx context.Context, id uuid.UUID, qty int) (err error) {
+	query := `
+		UPDATE products
+		SET stock = stock - $1
+		WHERE id = $2 AND (stock - $1) >= 0
+	`
+
+	cmd, err := r.db.Exec(ctx, query, qty, id)
+	if err != nil {
+		err = fmt.Errorf("product.repository.ReduceStock: failed to reduce stock: %w", err)
+		return
+	}
+
+	if cmd.RowsAffected() == 0 {
+		err = fmt.Errorf("product.repository.ReduceStock: failed to reduce stock: stock not enough, %w", constant.ErrInsufficientStock)
 		return
 	}
 

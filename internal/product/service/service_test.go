@@ -325,3 +325,38 @@ func TestUpdateStock(t *testing.T) {
 	})
 
 }
+
+func TestReduceStock(t *testing.T) {
+	initDep(t)
+
+	t.Run("success", func(t *testing.T) {
+		qty := 10
+		id := uuid.New()
+
+		pgxMock.ExpectExec("UPDATE products (.+) WHERE id = (.+) AND (.+)").
+			WithArgs(qty, id).
+			WillReturnResult(pgxmock.NewResult("UPDATE", 1))
+
+		err := productSvc.ReduceStock(context.Background(), id, qty)
+
+		assert.NoError(t, err)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+
+	t.Run("failed, stock not enough", func(t *testing.T) {
+		qty := 10
+		id := uuid.New()
+
+		pgxMock.ExpectExec("UPDATE products (.+) WHERE id = (.+) AND (.+)").
+			WithArgs(qty, id).
+			WillReturnResult(pgxmock.NewResult("UPDATE", 0))
+
+		err := productSvc.ReduceStock(context.Background(), id, qty)
+
+		assert.Error(t, err)
+		assert.ErrorIs(t, err, constant.ErrInsufficientStock)
+
+		assert.NoError(t, pgxMock.ExpectationsWereMet())
+	})
+}

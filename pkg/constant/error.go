@@ -16,6 +16,9 @@ var (
 	ErrAccessForbidden           = &ErrWithCode{HTTPStatusCode: http.StatusForbidden, Message: "access forbidden"}
 	ErrProductNotFound           = &ErrWithCode{HTTPStatusCode: http.StatusNotFound, Message: "product not found"}
 	ErrBankAccountNotFound       = &ErrWithCode{HTTPStatusCode: http.StatusNotFound, Message: "bank account not found"}
+	ErrInsufficientStock         = &ErrWithCode{HTTPStatusCode: http.StatusBadRequest, Message: "insufficient stock"}
+	ErrCannotButOwnProduct       = &ErrWithCode{HTTPStatusCode: http.StatusBadRequest, Message: "cannot buy own product"}
+	ErrProductNotPurchaseable    = &ErrWithCode{HTTPStatusCode: http.StatusBadRequest, Message: "product not purchaseable"}
 )
 
 type ErrWithCode struct {

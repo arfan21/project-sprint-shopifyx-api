@@ -22,6 +22,11 @@ func New(repo product.Repository) *Service {
 	return &Service{repo: repo}
 }
 
+func (s Service) WithTx(tx pgx.Tx) product.Service {
+	s.repo = s.repo.WithTx(tx)
+	return &s
+}
+
 func (s Service) Create(ctx context.Context, req model.ProductRequest) (err error) {
 	err = validation.Validate(req)
 	if err != nil {
@@ -131,7 +136,7 @@ func (s Service) validateProduct(ctx context.Context, id, userID uuid.UUID) (err
 	return
 }
 
-func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (res []model.ProductGetResponse, total int, err error) {
+func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (res []model.ProductDetailResponse, total int, err error) {
 	err = validation.Validate(req)
 	if err != nil {
 		err = fmt.Errorf("product.service.GetList: failed to validate request: %w", err)
@@ -144,10 +149,10 @@ func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (
 		return
 	}
 
-	res = make([]model.ProductGetResponse, len(resDB))
+	res = make([]model.ProductDetailResponse, len(resDB))
 
 	for i, v := range resDB {
-		res[i] = model.ProductGetResponse{
+		res[i] = model.ProductDetailResponse{
 			ProductID:      v.ID,
 			Name:           v.Name,
 			Price:          v.Price.InexactFloat64(),
@@ -170,7 +175,7 @@ func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (
 	return
 }
 
-func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.ProductGetResponse, err error) {
+func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.ProductDetailResponse, err error) {
 	resDB, err := s.repo.GetDetailByID(ctx, id)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
@@ -180,7 +185,7 @@ func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.Pro
 		return
 	}
 
-	res = model.ProductGetResponse{
+	res = model.ProductDetailResponse{
 		ProductID:      resDB.ID,
 		Name:           resDB.Name,
 		Price:          resDB.Price.InexactFloat64(),
@@ -214,9 +219,10 @@ func (s Service) UpdateStock(ctx context.Context, req model.ProductUpdateStockRe
 
 	defer func() {
 		if err != nil {
-			err = tx.Rollback(ctx)
-			if err != nil {
-				err = fmt.Errorf("product.service.UpdateStock: failed to rollback transaction: %w", err)
+			errRb := tx.Rollback(ctx)
+			if errRb != nil {
+				errRb = fmt.Errorf("payment.service.Create: failed to rollback transaction: %w", errRb)
+				err = errRb
 				return
 			}
 			return
@@ -238,6 +244,35 @@ func (s Service) UpdateStock(ctx context.Context, req model.ProductUpdateStockRe
 	if err != nil {
 		err = fmt.Errorf("product.service.UpdateStock: failed to update stock: %w", err)
 		return
+	}
+
+	return
+}
+
+func (s Service) ReduceStock(ctx context.Context, id uuid.UUID, qty int) (err error) {
+	return s.repo.ReduceStock(ctx, id, qty)
+}
+
+func (s Service) GetByID(ctx context.Context, id uuid.UUID) (res model.ProductGetResponse, err error) {
+	resDB, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			err = constant.ErrProductNotFound
+		}
+		err = fmt.Errorf("product.service.Update: failed to get product by id: %w", err)
+		return
+	}
+
+	res = model.ProductGetResponse{
+		ProductID:      resDB.ID,
+		Name:           resDB.Name,
+		Price:          resDB.Price,
+		ImageUrl:       resDB.ImageUrl,
+		Stock:          resDB.Stock,
+		Condition:      string(resDB.Condition),
+		Tags:           resDB.Tags,
+		IsPurchaseable: resDB.IsPurchaseable,
+		UserID:         resDB.UserID,
 	}
 
 	return

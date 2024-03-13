@@ -60,12 +60,9 @@ func (s Service) Update(ctx context.Context, req model.BankAccountRequest) (err 
 		return
 	}
 
-	_, err = s.repo.GetByID(ctx, req.BankAccountID, req.UserID)
+	_, err = s.GetByID(ctx, req.BankAccountID, req.UserID)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			err = constant.ErrBankAccountNotFound
-		}
-		err = fmt.Errorf("bankaccount.service.Update: failed to get bank account: %w", err)
+		err = fmt.Errorf("bankaccount.service.Delete: failed to get bank account: %w", err)
 		return
 	}
 
@@ -87,11 +84,8 @@ func (s Service) Update(ctx context.Context, req model.BankAccountRequest) (err 
 }
 
 func (s Service) Delete(ctx context.Context, id, userId uuid.UUID) (err error) {
-	_, err = s.repo.GetByID(ctx, id, userId)
+	_, err = s.GetByID(ctx, id, userId)
 	if err != nil {
-		if errors.Is(err, pgx.ErrNoRows) {
-			err = constant.ErrBankAccountNotFound
-		}
 		err = fmt.Errorf("bankaccount.service.Delete: failed to get bank account: %w", err)
 		return
 	}
@@ -121,6 +115,26 @@ func (s Service) GetListByUserID(ctx context.Context, userId uuid.UUID) (res []m
 			BankAccountNumber: v.AccountNumber,
 			BankAccountName:   v.AccountHolder,
 		}
+	}
+
+	return
+}
+
+func (s Service) GetByID(ctx context.Context, id, userId uuid.UUID) (res model.BankAccountResponse, err error) {
+	resDB, err := s.repo.GetByID(ctx, id, userId)
+	if err != nil {
+		if errors.Is(err, pgx.ErrNoRows) {
+			err = constant.ErrBankAccountNotFound
+		}
+		err = fmt.Errorf("bankaccount.service.GetByID: failed to get bank account by id: %w", err)
+		return
+	}
+
+	res = model.BankAccountResponse{
+		BankAccountID:     resDB.ID,
+		BankName:          resDB.BankName,
+		BankAccountNumber: resDB.AccountNumber,
+		BankAccountName:   resDB.AccountHolder,
 	}
 
 	return
