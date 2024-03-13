@@ -4,6 +4,8 @@ import (
 	bankaccountctrl "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/controller"
 	bankaccountrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/repository"
 	bankaccountsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/service"
+	fileuploaderctrl "github.com/arfan21/project-sprint-shopifyx-api/internal/fileuploader/controller"
+	fileuploadersvc "github.com/arfan21/project-sprint-shopifyx-api/internal/fileuploader/service"
 	productctrl "github.com/arfan21/project-sprint-shopifyx-api/internal/product/controller"
 	productrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/product/repository"
 	productsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/product/service"
@@ -31,9 +33,13 @@ func (s *Server) Routes() {
 	bankAccountSvc := bankaccountsvc.New(bankAccountRepo)
 	bankAccountCtrl := bankaccountctrl.New(bankAccountSvc)
 
+	fileUploaderSvc := fileuploadersvc.New()
+	fileUploaderCtrl := fileuploaderctrl.New(fileUploaderSvc)
+
 	s.RoutesCustomer(api, userCtrl)
 	s.RoutesProduct(api, productCtrl)
 	s.RoutesBankAccount(api, bankAccountCtrl)
+	s.RoutesFileUploader(api, fileUploaderCtrl)
 }
 
 func (s Server) RoutesCustomer(route fiber.Router, ctrl *userctrl.ControllerHTTP) {
@@ -61,4 +67,10 @@ func (s Server) RoutesBankAccount(route fiber.Router, ctrl *bankaccountctrl.Cont
 	bankAccountV1.Patch("/:id", ctrl.Update)
 	bankAccountV1.Delete("/:id", ctrl.Delete)
 	bankAccountV1.Get("", ctrl.GetList)
+}
+
+func (s Server) RoutesFileUploader(route fiber.Router, ctrl *fileuploaderctrl.ControllerHTTP) {
+	v1 := route.Group("/v1")
+	fileUploaderV1 := v1.Group("/image", middleware.JWTAuth)
+	fileUploaderV1.Post("", ctrl.UploadImage)
 }

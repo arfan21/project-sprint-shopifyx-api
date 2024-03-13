@@ -46,12 +46,6 @@ type jwt struct {
 	ExpireIn int    `mapstructure:"JWT_EXPIRE_IN"`
 }
 
-type s3 struct {
-	ID        string `mapstructure:"S3_ID"`
-	SecretKey string `mapstructure:"S3_SECRET_KEY"`
-	BaseURL   string `mapstructure:"S3_BASE_URL"`
-}
-
 type otel struct {
 	ExporterOTLPEndpoint   string `mapstructure:"OTEL_EXPORTER_OTLP_ENDPOINT"`
 	Insecure               bool   `mapstructure:"OTEL_INSECURE"`
@@ -66,6 +60,15 @@ type prometheus struct {
 
 type bcrypt struct {
 	Salt int `mapstructure:"BCRYPT_SALT"`
+}
+
+type s3 struct {
+	EndPoint  string `mapstructure:"S3_BASE_URL"`
+	AccessKey string `mapstructure:"S3_ID"`
+	SecretKey string `mapstructure:"S3_SECRET_KEY"`
+	Bucket    string `mapstructure:"S3_BUCKET"`
+	UseSSL    bool   `mapstructure:"S3_USESSL"`
+	Region    string `mapstructure:"S3_REGION"`
 }
 
 var configInstance *config
@@ -156,4 +159,5 @@ func initDefaultValue(v *viper.Viper) {
 	v.SetDefault("OTEL_EXPORTER_PROMETHEUS_PORT", "2223")
 	v.SetDefault("JWT_SECRET", "secret")
 	v.SetDefault("JWT_EXPIRE_IN", 120)
+	v.SetDefault("S3_REGION", "ap-southeast-1")
 }

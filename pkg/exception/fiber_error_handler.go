@@ -10,6 +10,7 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/constant"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/logger"
 	"github.com/arfan21/project-sprint-shopifyx-api/pkg/pkgutil"
+	"github.com/valyala/fasthttp"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/jackc/pgx/v5"
@@ -81,6 +82,11 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 	if strings.Contains(strings.ToLower(err.Error()), strings.ToLower("invalid UUID")) {
 		defaultRes.Code = fiber.StatusBadRequest
 		defaultRes.Message = constant.ErrInvalidUUID.Error()
+	}
+
+	if errors.Is(err, fasthttp.ErrNoMultipartForm) {
+		defaultRes.Code = fiber.StatusUnprocessableEntity
+		defaultRes.Message = err.Error()
 	}
 
 	if defaultRes.Code >= 500 {

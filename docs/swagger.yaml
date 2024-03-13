@@ -26,6 +26,23 @@ definitions:
       bankName:
         type: string
     type: object
+  github_com_arfan21_project-sprint-shopifyx-api_internal_model.PaymentRequest:
+    properties:
+      bankAccountId:
+        type: string
+      paymentProofImageUrl:
+        type: string
+      productId:
+        type: string
+      quantity:
+        minimum: 1
+        type: integer
+    required:
+    - bankAccountId
+    - paymentProofImageUrl
+    - productId
+    - quantity
+    type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductGetResponse:
     properties:
       condition:
@@ -40,14 +57,14 @@ definitions:
         type: number
       productId:
         type: string
-      purchaseCount:
-        type: integer
       stock:
         type: integer
       tags:
         items:
           type: string
         type: array
+      userId:
+        type: string
     type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductRequest:
     properties:
@@ -303,6 +320,42 @@ paths:
       summary: Update Bank Account
       tags:
       - Bank Account
+  /v1/image:
+    post:
+      consumes:
+      - multipart/form-data
+      description: Upload image to s3
+      parameters:
+      - description: Image file
+        in: formData
+        name: file
+        required: true
+        type: file
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+        "400":
+          description: Error validation field
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Upload Image
+      tags:
+      - Image Uploader
   /v1/product:
     get:
       consumes:
@@ -515,6 +568,53 @@ paths:
       summary: Update product
       tags:
       - product
+  /v1/product/{id}/buy:
+    post:
+      consumes:
+      - application/json
+      description: Create Payment
+      parameters:
+      - description: With the bearer started
+        in: header
+        name: Authorization
+        required: true
+        type: string
+      - description: Payload payment create request
+        in: body
+        name: body
+        required: true
+        schema:
+          $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_internal_model.PaymentRequest'
+      - description: Product ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+        "400":
+          description: Error validation field
+          schema:
+            allOf:
+            - $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+            - properties:
+                data:
+                  items:
+                    $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.ErrValidationResponse'
+                  type: array
+              type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/github_com_arfan21_project-sprint-shopifyx-api_pkg_pkgutil.HTTPResponse'
+      summary: Create Payment
+      tags:
+      - Payment
   /v1/product/{id}/stock:
     post:
       consumes:
