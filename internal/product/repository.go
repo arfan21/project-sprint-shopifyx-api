@@ -24,4 +24,6 @@ type Repository interface {
 	GetStockByIDForUpdate(ctx context.Context, id uuid.UUID) (stock int, err error)
 	UpdateStock(ctx context.Context, id uuid.UUID, stock int) (err error)
 	ReduceStock(ctx context.Context, id uuid.UUID, qty int) (err error)
+	Payment(ctx context.Context, data entity.Payment) (err error)
+	GetPurchaseCountByProductIds(ctx context.Context, productId []uuid.UUID) (res map[uuid.UUID]int, err error)
 }

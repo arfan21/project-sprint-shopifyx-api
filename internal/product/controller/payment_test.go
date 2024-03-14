@@ -1,4 +1,4 @@
-package paymentctrl
+package productctrl
 
 import (
 	"bytes"
@@ -17,9 +17,6 @@ import (
 	bankaccountrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/repository"
 	bankaccountsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/bankaccount/service"
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/model"
-	"github.com/arfan21/project-sprint-shopifyx-api/internal/payment"
-	paymentrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/payment/repository"
-	paymentsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/payment/service"
 	"github.com/arfan21/project-sprint-shopifyx-api/internal/product"
 	productrepo "github.com/arfan21/project-sprint-shopifyx-api/internal/product/repository"
 	productsvc "github.com/arfan21/project-sprint-shopifyx-api/internal/product/service"
@@ -108,13 +105,11 @@ func initDocker(t *testing.T) (*dockertest.Pool, *dockertest.Resource) {
 }
 
 var (
-	paymentSvc      payment.Service
-	repoPG          payment.Repository
 	productRepo     product.Repository
 	productSvc      product.Service
 	bankAccountRepo bankaccount.Repository
 	bankAccountSvc  bankaccount.Service
-	paymentCtrl     *ControllerHTTP
+	productCtrl     *ControllerHTTP
 
 	defaultPassword = "test"
 )
@@ -122,18 +117,6 @@ var (
 func initDep(t *testing.T) {
 	if dockerPool == nil {
 		initDocker(t)
-	}
-
-	if repoPG == nil {
-		repoPG = paymentrepo.New(db)
-	}
-
-	if productRepo == nil {
-		productRepo = productrepo.New(db)
-	}
-
-	if productSvc == nil {
-		productSvc = productsvc.New(productRepo)
 	}
 
 	if bankAccountRepo == nil {
@@ -144,12 +127,16 @@ func initDep(t *testing.T) {
 		bankAccountSvc = bankaccountsvc.New(bankAccountRepo)
 	}
 
-	if paymentSvc == nil {
-		paymentSvc = paymentsvc.New(repoPG, bankAccountSvc, productSvc)
+	if productRepo == nil {
+		productRepo = productrepo.New(db)
 	}
 
-	if paymentCtrl == nil {
-		paymentCtrl = New(paymentSvc)
+	if productSvc == nil {
+		productSvc = productsvc.New(productRepo, bankAccountSvc)
+	}
+
+	if productCtrl == nil {
+		productCtrl = New(productSvc)
 	}
 }
 
@@ -230,7 +217,7 @@ func TestCreateRoute(t *testing.T) {
 	})
 
 	app.Use(recover.New())
-	app.Post(route, middleware.JWTAuth, paymentCtrl.Create)
+	app.Post(route, middleware.JWTAuth, productCtrl.Payment)
 
 	t.Run("success", func(t *testing.T) {
 		sellerId := initUser(t)
@@ -247,7 +234,6 @@ func TestCreateRoute(t *testing.T) {
 			Quantity:             1,
 			PaymentProofImageURL: "https://test.com/image.jpg",
 		}
-
 		reqTest := createRequestTest(t, req, route, buyerToken)
 
 		resp, err := app.Test(reqTest, 1000)
@@ -318,11 +304,13 @@ func TestCreateRoute(t *testing.T) {
 	})
 }
 
-func createRequestTest(t *testing.T, req any, route string, token string) *http.Request {
+func createRequestTest(t *testing.T, req model.PaymentRequest, route string, token string) *http.Request {
 	reqJson, err := json.Marshal(req)
 	assert.NoError(t, err)
 	body := new(bytes.Buffer)
 	body.Write(reqJson)
+
+	route = fmt.Sprintf("/v1/product/%s/buy", req.ProductID.String())
 	reqTest := httptest.NewRequest("POST", route, body)
 	reqTest.Header.Set("Content-Type", "application/json")
 	reqTest.Header.Set("Authorization", fmt.Sprintf("Bearer %s", token))

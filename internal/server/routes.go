@@ -25,16 +25,16 @@ func (s *Server) Routes() {
 	userSvc := usersvc.New(userRepo)
 	userCtrl := userctrl.New(userSvc)
 
-	productRepo := productrepo.New(s.db)
-	productSvc := productsvc.New(productRepo)
-	productCtrl := productctrl.New(productSvc)
-
 	bankAccountRepo := bankaccountrepo.New(s.db)
 	bankAccountSvc := bankaccountsvc.New(bankAccountRepo)
 	bankAccountCtrl := bankaccountctrl.New(bankAccountSvc)
 
 	fileUploaderSvc := fileuploadersvc.New()
 	fileUploaderCtrl := fileuploaderctrl.New(fileUploaderSvc)
+
+	productRepo := productrepo.New(s.db)
+	productSvc := productsvc.New(productRepo, bankAccountSvc)
+	productCtrl := productctrl.New(productSvc)
 
 	s.RoutesCustomer(api, userCtrl)
 	s.RoutesProduct(api, productCtrl)
@@ -58,6 +58,7 @@ func (s Server) RoutesProduct(route fiber.Router, ctrl *productctrl.ControllerHT
 	productV1.Get("", ctrl.GetList)
 	productV1.Get("/:id", ctrl.GetDetailByID)
 	productV1.Post("/:id/stock", middleware.JWTAuth, ctrl.UpdateStock)
+	productV1.Post("/:id/buy", middleware.JWTAuth, ctrl.Payment)
 }
 
 func (s Server) RoutesBankAccount(route fiber.Router, ctrl *bankaccountctrl.ControllerHTTP) {

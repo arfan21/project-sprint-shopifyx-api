@@ -19,4 +19,5 @@ type Service interface {
 	UpdateStock(ctx context.Context, req model.ProductUpdateStockRequest) (err error)
 	ReduceStock(ctx context.Context, id uuid.UUID, qty int) (err error)
 	GetByID(ctx context.Context, id uuid.UUID) (res model.ProductGetResponse, err error)
+	Payment(ctx context.Context, req model.PaymentRequest) (err error)
 }

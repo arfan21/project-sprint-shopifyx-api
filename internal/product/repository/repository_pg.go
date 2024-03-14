@@ -346,3 +346,64 @@ func (r Repository) ReduceStock(ctx context.Context, id uuid.UUID, qty int) (err
 
 	return
 }
+
+func (r Repository) Payment(ctx context.Context, data entity.Payment) (err error) {
+	query := `
+		INSERT INTO payments (id, userId, productId, bankAccountId, paymentProofImageUrl, quantity, totalPrice)
+		VALUES ($1, $2, $3, $4, $5, $6, $7)
+	`
+
+	_, err = r.db.Exec(ctx, query,
+		data.ID,
+		data.UserID,
+		data.ProductID,
+		data.BankAccountID,
+		data.PaymentProofImageURL,
+		data.Quantity,
+		data.TotalPrice,
+	)
+	if err != nil {
+		err = fmt.Errorf("product.repository.Payment: failed to create payment: %w", err)
+		return
+	}
+
+	return
+}
+
+func (r Repository) GetPurchaseCountByProductIds(ctx context.Context, productId []uuid.UUID) (res map[uuid.UUID]int, err error) {
+	query := `
+		SELECT
+			SUM(quantity) AS total,
+			productId
+		FROM
+			payments
+		WHERE
+			productId IN ($1)
+		GROUP BY productId
+	`
+
+	rows, err := r.db.Query(ctx, query, productId)
+	if err != nil {
+		err = fmt.Errorf("payment.repository.GetPurchaseCountByProductIds: failed to get purchase count by product ids: %w", err)
+		return
+	}
+
+	res = make(map[uuid.UUID]int)
+
+	for rows.Next() {
+		var (
+			productId uuid.UUID
+			total     int
+		)
+
+		err = rows.Scan(&total, &productId)
+		if err != nil {
+			err = fmt.Errorf("payment.repository.GetPurchaseCountByProductIds: failed to scan: %w", err)
+			return
+		}
+
+		res[productId] = total
+	}
+
+	return
+}
