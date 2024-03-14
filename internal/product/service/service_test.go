@@ -256,14 +256,20 @@ func TestGetList(t *testing.T) {
 			Limit:  10,
 		}
 
+		productId := uuid.New()
+
 		pgxMock.ExpectQuery("SELECT (.+) FROM products (.+)").
 			WithArgs(0, req.Limit, req.Offset).
 			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable"}).
-				AddRow(uuid.New(), "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true))
+				AddRow(productId, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true))
 
 		pgxMock.ExpectQuery("SELECT COUNT(.+) FROM products (.+)").
 			WithArgs(0).
 			WillReturnRows(pgxMock.NewRows([]string{"count"}).AddRow(1))
+
+		pgxMock.ExpectQuery("SELECT (.+) FROM payments (.+)").
+			WithArgs([]uuid.UUID{productId}).
+			WillReturnRows(pgxMock.NewRows([]string{"total", "productId"}).AddRow(1, productId))
 
 		res, total, err := productSvc.GetList(context.Background(), req)
 

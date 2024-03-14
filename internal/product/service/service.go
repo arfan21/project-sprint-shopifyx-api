@@ -153,19 +153,55 @@ func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (
 	}
 
 	res = make([]model.ProductDetailResponse, len(resDB))
-
+	productIds := make([]uuid.UUID, len(resDB))
 	for i, v := range resDB {
 		res[i] = model.ProductDetailResponse{
-			ProductID:      v.ID,
-			Name:           v.Name,
-			Price:          v.Price.InexactFloat64(),
-			ImageUrl:       v.ImageUrl,
-			Stock:          v.Stock,
-			Condition:      string(v.Condition),
-			Tags:           v.Tags,
-			IsPurchaseable: v.IsPurchaseable,
+			ProductID:     v.ID,
+			Name:          v.Name,
+			Price:         v.Price.InexactFloat64(),
+			ImageUrl:      v.ImageUrl,
+			Stock:         v.Stock,
+			Condition:     string(v.Condition),
+			Tags:          v.Tags,
+			IsPurchasable: v.IsPurchaseable,
 		}
+
+		productIds[i] = v.ID
 	}
+
+	// errg, ctxg := errgroup.WithContext(ctx)
+
+	// errg.Go(func() error {
+	// 	total, err = s.repo.GetTotal(ctxg, req)
+	// 	if err != nil {
+	// 		err = fmt.Errorf("product.service.GetList: failed to get total product: %w", err)
+	// 		return err
+	// 	}
+
+	// 	return nil
+	// })
+
+	// errg.Go(func() error {
+	// 	purchaseCountsMap, err := s.repo.GetPurchaseCountByProductIds(ctxg, productIds)
+	// 	if err != nil {
+	// 		err = fmt.Errorf("product.service.GetList: failed to get purchase count by product ids: %w", err)
+	// 		return err
+	// 	}
+
+	// 	for i, v := range res {
+	// 		if purchaseCount, ok := purchaseCountsMap[v.ProductID]; ok {
+	// 			res[i].PurchaseCount = purchaseCount
+	// 		}
+	// 	}
+
+	// 	return nil
+	// })
+
+	// err = errg.Wait()
+	// if err != nil {
+	// 	err = fmt.Errorf("product.service.GetList: failed to wait errgroup: %w", err)
+	// 	return
+	// }
 
 	total, err = s.repo.GetTotal(ctx, req)
 	if err != nil {
@@ -173,7 +209,17 @@ func (s Service) GetList(ctx context.Context, req model.ProductGetListRequest) (
 		return
 	}
 
-	// TODO: add get purchase count each product
+	purchaseCountsMap, err := s.repo.GetPurchaseCountByProductIds(ctx, productIds)
+	if err != nil {
+		err = fmt.Errorf("product.service.GetList: failed to get purchase count by product ids: %w", err)
+		return
+	}
+
+	for i, v := range res {
+		if purchaseCount, ok := purchaseCountsMap[v.ProductID]; ok {
+			res[i].PurchaseCount = purchaseCount
+		}
+	}
 
 	return
 }
@@ -189,14 +235,14 @@ func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.Pro
 	}
 
 	res = model.ProductDetailResponse{
-		ProductID:      resDB.ID,
-		Name:           resDB.Name,
-		Price:          resDB.Price.InexactFloat64(),
-		ImageUrl:       resDB.ImageUrl,
-		Stock:          resDB.Stock,
-		Condition:      string(resDB.Condition),
-		Tags:           resDB.Tags,
-		IsPurchaseable: resDB.IsPurchaseable,
+		ProductID:     resDB.ID,
+		Name:          resDB.Name,
+		Price:         resDB.Price.InexactFloat64(),
+		ImageUrl:      resDB.ImageUrl,
+		Stock:         resDB.Stock,
+		Condition:     string(resDB.Condition),
+		Tags:          resDB.Tags,
+		IsPurchasable: resDB.IsPurchaseable,
 	}
 
 	return
@@ -267,15 +313,15 @@ func (s Service) GetByID(ctx context.Context, id uuid.UUID) (res model.ProductGe
 	}
 
 	res = model.ProductGetResponse{
-		ProductID:      resDB.ID,
-		Name:           resDB.Name,
-		Price:          resDB.Price,
-		ImageUrl:       resDB.ImageUrl,
-		Stock:          resDB.Stock,
-		Condition:      string(resDB.Condition),
-		Tags:           resDB.Tags,
-		IsPurchaseable: resDB.IsPurchaseable,
-		UserID:         resDB.UserID,
+		ProductID:     resDB.ID,
+		Name:          resDB.Name,
+		Price:         resDB.Price,
+		ImageUrl:      resDB.ImageUrl,
+		Stock:         resDB.Stock,
+		Condition:     string(resDB.Condition),
+		Tags:          resDB.Tags,
+		IsPurchasable: resDB.IsPurchaseable,
+		UserID:        resDB.UserID,
 	}
 
 	return
@@ -300,7 +346,7 @@ func (s Service) Payment(ctx context.Context, req model.PaymentRequest) (err err
 		return
 	}
 
-	if !resProduct.IsPurchaseable {
+	if !resProduct.IsPurchasable {
 		err = fmt.Errorf("product.service.Payment: failed to purchase product: %w", constant.ErrProductNotPurchaseable)
 		return
 	}
@@ -343,8 +389,7 @@ func (s Service) Payment(ctx context.Context, req model.PaymentRequest) (err err
 		if err != nil {
 			errRb := tx.Rollback(ctx)
 			if errRb != nil {
-				errRb = fmt.Errorf("product.service.Payment: failed to rollback transaction: %w", errRb)
-				err = errRb
+				err = fmt.Errorf("product.service.Payment: failed to rollback transaction: %w", errRb)
 				return
 			}
 			return

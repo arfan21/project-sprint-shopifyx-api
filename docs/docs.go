@@ -1021,7 +1021,7 @@ const docTemplate = `{
                 "imageUrl": {
                     "type": "string"
                 },
-                "isPurchaseable": {
+                "isPurchasable": {
                     "type": "boolean"
                 },
                 "name": {

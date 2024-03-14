@@ -49,7 +49,7 @@ definitions:
         type: string
       imageUrl:
         type: string
-      isPurchaseable:
+      isPurchasable:
         type: boolean
       name:
         type: string

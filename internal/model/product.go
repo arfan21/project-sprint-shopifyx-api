@@ -40,28 +40,28 @@ type ProductGetListRequest struct {
 }
 
 type ProductDetailResponse struct {
-	ProductID      uuid.UUID `json:"productId"`
-	Name           string    `json:"name"`
-	Price          float64   `json:"price"`
-	ImageUrl       string    `json:"imageUrl"`
-	Stock          int       `json:"stock"`
-	Condition      string    `json:"condition"`
-	Tags           []string  `json:"tags"`
-	IsPurchaseable bool      `json:"isPurchaseable"`
-	PurchaseCount  int       `json:"purchaseCount"`
+	ProductID     uuid.UUID `json:"productId"`
+	Name          string    `json:"name"`
+	Price         float64   `json:"price"`
+	ImageUrl      string    `json:"imageUrl"`
+	Stock         int       `json:"stock"`
+	Condition     string    `json:"condition"`
+	Tags          []string  `json:"tags"`
+	IsPurchasable bool      `json:"isPurchasable"`
+	PurchaseCount int       `json:"purchaseCount"`
 }
 
 // ProductGetResponse is model for internal use
 type ProductGetResponse struct {
-	ProductID      uuid.UUID       `json:"productId"`
-	UserID         uuid.UUID       `json:"userId"`
-	Name           string          `json:"name"`
-	Price          decimal.Decimal `json:"price"`
-	ImageUrl       string          `json:"imageUrl"`
-	Stock          int             `json:"stock"`
-	Condition      string          `json:"condition"`
-	Tags           []string        `json:"tags"`
-	IsPurchaseable bool            `json:"isPurchaseable"`
+	ProductID     uuid.UUID       `json:"productId"`
+	UserID        uuid.UUID       `json:"userId"`
+	Name          string          `json:"name"`
+	Price         decimal.Decimal `json:"price"`
+	ImageUrl      string          `json:"imageUrl"`
+	Stock         int             `json:"stock"`
+	Condition     string          `json:"condition"`
+	Tags          []string        `json:"tags"`
+	IsPurchasable bool            `json:"isPurchasable"`
 }
 
 type ProductUpdateStockRequest struct {

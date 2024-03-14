@@ -370,7 +370,8 @@ func (r Repository) Payment(ctx context.Context, data entity.Payment) (err error
 	return
 }
 
-func (r Repository) GetPurchaseCountByProductIds(ctx context.Context, productId []uuid.UUID) (res map[uuid.UUID]int, err error) {
+func (r Repository) GetPurchaseCountByProductIds(ctx context.Context, productIds []uuid.UUID) (res map[uuid.UUID]int, err error) {
+
 	query := `
 		SELECT
 			SUM(quantity) AS total,
@@ -378,11 +379,11 @@ func (r Repository) GetPurchaseCountByProductIds(ctx context.Context, productId 
 		FROM
 			payments
 		WHERE
-			productId IN ($1)
+			productId = ANY($1)
 		GROUP BY productId
 	`
 
-	rows, err := r.db.Query(ctx, query, productId)
+	rows, err := r.db.Query(ctx, query, productIds)
 	if err != nil {
 		err = fmt.Errorf("payment.repository.GetPurchaseCountByProductIds: failed to get purchase count by product ids: %w", err)
 		return
