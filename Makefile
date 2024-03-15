@@ -24,3 +24,21 @@ air:
 
 air-win:
 	air -c .air.win.toml serve
+
+# make startProm
+.PHONY: startProm
+startProm:
+	docker run \
+	-p 9090:9090 \
+	--name=prometheus \
+	-v $(shell pwd)/prometheus.yml:/etc/prometheus/prometheus.yml \
+	-d \
+	prom/prometheus
+
+# make startGrafana
+# for first timers, the username & password is both `admin`
+.PHONY: startGrafana
+startGrafana:
+	docker volume create grafana-storage
+	docker volume inspect grafana-storage
+	docker run -d -p 3000:3000 --name=grafana grafana/grafana-oss || docker start grafana
