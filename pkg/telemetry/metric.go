@@ -18,34 +18,45 @@ import (
 
 func InitMetric() (func(ctx context.Context) error, error) {
 	ctx := context.Background()
-	secureOption := otlpmetricgrpc.WithTLSCredentials(credentials.NewClientTLSFromCert(nil, ""))
-	if config.Get().Otel.Insecure {
-		secureOption = otlpmetricgrpc.WithInsecure()
-	}
-
-	exporter, err := otlpmetricgrpc.New(
-		ctx,
-		secureOption,
-		otlpmetricgrpc.WithEndpoint(collectorURL),
-	)
-
-	if err != nil {
-		logger.Log(ctx).Error().Err(err).Msg("could not initialize exporter")
-		return nil, err
-	}
-
-	prometheusExporter, err := prometheus.New()
-	if err != nil {
-		logger.Log(ctx).Error().Err(err).Msg("could not initialize prometheus exporter")
-		return nil, err
-	}
-
-	reader := sdkmetric.NewPeriodicReader(exporter)
 
 	options := []sdkmetric.Option{
 		sdkmetric.WithResource(newResource()),
-		sdkmetric.WithReader(reader),
-		sdkmetric.WithReader(prometheusExporter),
+	}
+
+	if !config.Get().Otel.OnlyPrometheusExporter {
+		secureOption := otlpmetricgrpc.WithTLSCredentials(credentials.NewClientTLSFromCert(nil, ""))
+		if config.Get().Otel.Insecure {
+			secureOption = otlpmetricgrpc.WithInsecure()
+		}
+
+		exporter, err := otlpmetricgrpc.New(
+			ctx,
+			secureOption,
+			otlpmetricgrpc.WithEndpoint(collectorURL),
+		)
+
+		if err != nil {
+			logger.Log(ctx).Error().Err(err).Msg("could not initialize exporter")
+			return nil, err
+		}
+		reader := sdkmetric.NewPeriodicReader(exporter)
+		options = append(options, sdkmetric.WithReader(reader))
+
+		prometheusExporter, err := prometheus.New()
+		if err != nil {
+			logger.Log(ctx).Error().Err(err).Msg("could not initialize prometheus exporter")
+			return nil, err
+		}
+
+		options = append(options, sdkmetric.WithReader(prometheusExporter))
+	} else {
+		prometheusExporter, err := prometheus.New()
+		if err != nil {
+			logger.Log(ctx).Error().Err(err).Msg("could not initialize prometheus exporter")
+			return nil, err
+		}
+
+		options = append(options, sdkmetric.WithReader(prometheusExporter))
 	}
 
 	metricProvider := sdkmetric.NewMeterProvider(options...)
@@ -53,7 +64,7 @@ func InitMetric() (func(ctx context.Context) error, error) {
 	otel.SetTextMapPropagator(propagation.NewCompositeTextMapPropagator(propagation.TraceContext{}, propagation.Baggage{}))
 
 	logger.Log(context.Background()).Info().Msg("Starting runtime instrumentation:")
-	err = runtime.Start(runtime.WithMinimumReadMemStatsInterval(time.Second))
+	err := runtime.Start(runtime.WithMinimumReadMemStatsInterval(time.Second))
 	if err != nil {
 		logger.Log(context.Background()).Error().Err(err).Msg("Failed to start runtime instrumentation")
 		return nil, err

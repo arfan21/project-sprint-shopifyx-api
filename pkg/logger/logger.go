@@ -23,7 +23,7 @@ func Log(ctx context.Context) *zerolog.Logger {
 			loggerInstance = loggerInstance.Output(zerolog.ConsoleWriter{Out: os.Stderr})
 		}
 
-		if config.Get().Otel.Enabled {
+		if config.Get().Otel.EnableLogging {
 			loggerInstance = loggerInstance.Hook(NewHook())
 		}
 

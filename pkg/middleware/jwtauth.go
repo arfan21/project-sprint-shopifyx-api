@@ -42,8 +42,8 @@ func JWTAuth(c *fiber.Ctx) error {
 	})
 	if err != nil {
 		logger.Log(c.UserContext()).Error().Msgf("middleware: failed to parse jwt token: %v", err)
-		return c.Status(fiber.StatusUnauthorized).JSON(pkgutil.HTTPResponse{
-			Code:    fiber.StatusUnauthorized,
+		return c.Status(fiber.StatusForbidden).JSON(pkgutil.HTTPResponse{
+			Code:    fiber.StatusForbidden,
 			Message: "invalid or expired token",
 		})
 	}
@@ -53,8 +53,8 @@ func JWTAuth(c *fiber.Ctx) error {
 		idUUID, err := uuid.Parse(claims.Subject)
 		if err != nil {
 			logger.Log(c.UserContext()).Error().Msgf("middleware: failed to parse user id: %v", err)
-			return c.Status(fiber.StatusUnauthorized).JSON(pkgutil.HTTPResponse{
-				Code:    fiber.StatusUnauthorized,
+			return c.Status(fiber.StatusForbidden).JSON(pkgutil.HTTPResponse{
+				Code:    fiber.StatusForbidden,
 				Message: "invalid or expired token",
 			})
 		}
@@ -64,8 +64,8 @@ func JWTAuth(c *fiber.Ctx) error {
 	}
 
 	logger.Log(c.UserContext()).Error().Msg("middleware: invalid or expired token")
-	return c.Status(fiber.StatusUnauthorized).JSON(pkgutil.HTTPResponse{
-		Code:    fiber.StatusUnauthorized,
+	return c.Status(fiber.StatusForbidden).JSON(pkgutil.HTTPResponse{
+		Code:    fiber.StatusForbidden,
 		Message: "invalid or expired token",
 	})
 }

@@ -26,13 +26,7 @@ func Serve() *cli.Command {
 				return err
 			}
 
-			if config.Get().Otel.Enabled {
-				tracerShutdown, err := telemetry.InitTracer()
-				if err != nil {
-					return err
-				}
-				defer tracerShutdown(context.Background())
-
+			if config.Get().Otel.EnableLogging {
 				logShutdown, err := telemetry.InitLogs()
 				if err != nil {
 					return err
@@ -40,6 +34,25 @@ func Serve() *cli.Command {
 
 				defer logShutdown(context.Background())
 
+				logger.Log(context.Background()).Info().Msg("otel logging enabled")
+			} else {
+				logger.Log(context.Background()).Warn().Msg("otel logging disabled")
+			}
+
+			if config.Get().Otel.EnableTracing {
+				tracerShutdown, err := telemetry.InitTracer()
+				if err != nil {
+					return err
+				}
+				defer tracerShutdown(context.Background())
+
+				// this log called for initialize hook
+				logger.Log(context.Background()).Info().Msgf("otel tracing enabled with service name: %s", config.Get().Service.Name)
+			} else {
+				logger.Log(context.Background()).Warn().Msg("otel tracing disabled")
+			}
+
+			if config.Get().Otel.EnableMetrics {
 				metricShutdown, err := telemetry.InitMetric()
 				if err != nil {
 					return err
@@ -47,10 +60,13 @@ func Serve() *cli.Command {
 
 				defer metricShutdown(context.Background())
 
-				// this log called for initialize hook
-				logger.Log(context.Background()).Info().Msgf("tracing enabled with service name: %s", config.Get().Service.Name)
+				if config.Get().Otel.OnlyPrometheusExporter {
+					logger.Log(context.Background()).Info().Msg("otel metric enabled only with prometheus")
+				} else {
+					logger.Log(context.Background()).Info().Msg("otel metric enabled with otlp & prometheus")
+				}
 			} else {
-				logger.Log(context.Background()).Warn().Msg("tracing disabled")
+				logger.Log(context.Background()).Warn().Msg("otel metric disabled")
 			}
 
 			db, err := dbpostgres.NewPgx()

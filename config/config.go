@@ -49,9 +49,12 @@ type jwt struct {
 type otel struct {
 	ExporterOTLPEndpoint   string `mapstructure:"OTEL_EXPORTER_OTLP_ENDPOINT"`
 	Insecure               bool   `mapstructure:"OTEL_INSECURE"`
-	Enabled                bool   `mapstructure:"OTEL_ENABLED"`
 	ExporterPrometheusPath string `mapstructure:"OTEL_EXPORTER_PROMETHEUS_PATH"`
 	ExporterPrometheusPort string `mapstructure:"OTEL_EXPORTER_PROMETHEUS_PORT"`
+	EnableTracing          bool   `mapstructure:"OTEL_ENABLE_TRACING"`
+	EnableMetrics          bool   `mapstructure:"OTEL_ENABLE_METRICS"`
+	EnableLogging          bool   `mapstructure:"OTEL_ENABLE_LOGGING"`
+	OnlyPrometheusExporter bool   `mapstructure:"OTEL_ONLY_PROMETHEUS_EXPORTER"`
 }
 
 type prometheus struct {
@@ -160,4 +163,6 @@ func initDefaultValue(v *viper.Viper) {
 	v.SetDefault("JWT_SECRET", "secret")
 	v.SetDefault("JWT_EXPIRE_IN", 120)
 	v.SetDefault("S3_REGION", "ap-southeast-1")
+	v.SetDefault("OTEL_ENABLE_METRICS", true)
+	v.SetDefault("OTEL_ONLY_PROMETHEUS_EXPORTER", true)
 }

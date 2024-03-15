@@ -34,7 +34,7 @@ func (ctrl ControllerHTTP) Create(c *fiber.Ctx) error {
 	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
 	if !ok {
 		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"message": "invalid or expired token",
 		})
 	}
@@ -68,7 +68,7 @@ func (ctrl ControllerHTTP) Update(c *fiber.Ctx) error {
 	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
 	if !ok {
 		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"message": "invalid or expired token",
 		})
 	}
@@ -104,7 +104,7 @@ func (ctrl ControllerHTTP) Delete(c *fiber.Ctx) error {
 	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
 	if !ok {
 		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"message": "invalid or expired token",
 		})
 	}
@@ -200,7 +200,7 @@ func (ctrl ControllerHTTP) UpdateStock(c *fiber.Ctx) error {
 	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
 	if !ok {
 		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"message": "invalid or expired token",
 		})
 	}
@@ -239,7 +239,7 @@ func (ctrl ControllerHTTP) Payment(c *fiber.Ctx) error {
 	claims, ok := c.Locals(constant.JWTClaimsContextKey).(model.JWTClaims)
 	if !ok {
 		logger.Log(c.UserContext()).Error().Msg("cannot get claims from context")
-		return c.Status(fiber.StatusUnauthorized).JSON(fiber.Map{
+		return c.Status(fiber.StatusForbidden).JSON(fiber.Map{
 			"message": "invalid or expired token",
 		})
 	}

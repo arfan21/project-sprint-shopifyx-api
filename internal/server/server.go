@@ -2,7 +2,6 @@ package server
 
 import (
 	"context"
-	"net/http"
 	"os"
 	"os/signal"
 	"syscall"
@@ -17,6 +16,7 @@ import (
 	"github.com/gofiber/contrib/fiberzerolog"
 	"github.com/gofiber/contrib/otelfiber"
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/adaptor"
 	"github.com/gofiber/fiber/v2/middleware/cors"
 	"github.com/gofiber/fiber/v2/middleware/recover"
 	"github.com/gofiber/swagger"
@@ -40,12 +40,20 @@ func New(
 	app := fiber.New(fiber.Config{
 		ErrorHandler: exception.FiberErrorHandler,
 	})
+
+	if config.Get().Otel.EnableMetrics {
+		app.Get("/metrics", adaptor.HTTPHandler(promhttp.Handler()))
+	}
+
 	timeout := time.Duration(config.Get().Service.Timeout) * time.Second
 	app.Use(middleware.Timeout(timeout))
 
 	app.Use(cors.New())
-	app.Use(otelfiber.Middleware())
-	app.Use(middleware.TraceID())
+	if config.Get().Otel.EnableMetrics || config.Get().Otel.EnableTracing {
+		app.Use(otelfiber.Middleware())
+		app.Use(middleware.TraceID())
+	}
+
 	app.Use(fiberzerolog.New(fiberzerolog.Config{
 		// Logger: logger.Log(context.Background()),
 		GetLogger: func(c *fiber.Ctx) zerolog.Logger {
@@ -72,13 +80,13 @@ func (s *Server) Run() error {
 		}
 	}()
 
-	go func() {
-		logger.Log(ctx).Info().Msgf("Starting prometheus exporter on port %s", config.Get().Otel.ExporterPrometheusPort)
-		http.Handle(config.Get().Otel.ExporterPrometheusPath, promhttp.Handler())
-		if err := http.ListenAndServe(pkgutil.GetPort(config.Get().Otel.ExporterPrometheusPort), nil); err != nil {
-			logger.Log(ctx).Fatal().Err(err).Msg("failed to start prometheus exporter")
-		}
-	}()
+	// go func() {
+	// 	logger.Log(ctx).Info().Msgf("Starting prometheus exporter on port %s", config.Get().Otel.ExporterPrometheusPort)
+	// 	http.Handle(config.Get().Otel.ExporterPrometheusPath)
+	// 	if err := http.ListenAndServe(pkgutil.GetPort(config.Get().Otel.ExporterPrometheusPort), nil); err != nil {
+	// 		logger.Log(ctx).Fatal().Err(err).Msg("failed to start prometheus exporter")
+	// 	}
+	// }()
 
 	quit := make(chan os.Signal, 1)
 	signal.Notify(quit, os.Interrupt, syscall.SIGTERM)
