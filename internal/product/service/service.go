@@ -245,6 +245,34 @@ func (s Service) GetDetailByID(ctx context.Context, id uuid.UUID) (res model.Pro
 		IsPurchasable: resDB.IsPurchaseable,
 	}
 
+	purchaseCountsMap, err := s.repo.GetPurchaseCountByProductIds(ctx, []uuid.UUID{resDB.ID})
+	if err != nil {
+		err = fmt.Errorf("product.service.GetList: failed to get purchase count by product ids: %w", err)
+		return
+	}
+
+	if purchaseCount, ok := purchaseCountsMap[resDB.ID]; ok {
+		res.PurchaseCount = purchaseCount
+	}
+
+	purchaseCountSeller, err := s.repo.GetPurchaseCountBySeller(ctx, resDB.UserID)
+	if err != nil {
+		err = fmt.Errorf("product.service.GetDetailByID: failed to get purchase count by seller: %w", err)
+		return
+	}
+
+	sellerBankAccounts, err := s.bankAccountSvc.GetListByUserID(ctx, resDB.UserID)
+	if err != nil {
+		err = fmt.Errorf("product.service.GetDetailByID: failed to get bank accounts by user id: %w", err)
+		return
+	}
+
+	res.Seller = model.ProductDetailSellerResponse{
+		ProductSoldTotal: purchaseCountSeller,
+		Name:             resDB.Seller.Name,
+		BankAccounts:     sellerBankAccounts,
+	}
+
 	return
 }
 

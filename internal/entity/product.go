@@ -26,6 +26,7 @@ type Product struct {
 	IsPurchaseable bool             `json:"isPurchaseable"`
 	CreatedAt      time.Time        `json:"createdAt"`
 	UpdatedAt      time.Time        `json:"updatedAt"`
+	Seller         User             `json:"seller"`
 }
 
 func (Product) TableName() string {

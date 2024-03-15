@@ -269,9 +269,10 @@ func (r Repository) GetTotal(ctx context.Context, filter model.ProductGetListReq
 
 func (r Repository) GetDetailByID(ctx context.Context, id uuid.UUID) (product entity.Product, err error) {
 	query := `
-		SELECT id, name, price, imageUrl, stock, condition, tags, isPurchaseable, userId
+		SELECT products.id, products.name, price, imageUrl, stock, condition, tags, isPurchaseable, users.id, users.name
 		FROM products
-		WHERE id = $1
+		JOIN users ON products.userId = users.id
+		WHERE products.id = $1
 	`
 
 	err = r.db.QueryRow(ctx, query, id).Scan(
@@ -284,6 +285,7 @@ func (r Repository) GetDetailByID(ctx context.Context, id uuid.UUID) (product en
 		&product.Tags,
 		&product.IsPurchaseable,
 		&product.UserID,
+		&product.Seller.Name,
 	)
 	if err != nil {
 		err = fmt.Errorf("product.repository.GetDetailByID: failed to get product by id: %w", err)
@@ -404,6 +406,29 @@ func (r Repository) GetPurchaseCountByProductIds(ctx context.Context, productIds
 		}
 
 		res[productId] = total
+	}
+
+	return
+}
+
+func (r Repository) GetPurchaseCountBySeller(ctx context.Context, sellerId uuid.UUID) (res int, err error) {
+	query := `
+		SELECT
+			SUM(quantity) AS total
+		FROM
+			payments
+		WHERE
+			productId IN (
+				SELECT id
+				FROM products
+				WHERE userId = $1
+			)
+	`
+
+	err = r.db.QueryRow(ctx, query, sellerId).Scan(&res)
+	if err != nil {
+		err = fmt.Errorf("payment.repository.GetPurchaseCountBySeller: failed to get purchase count by seller: %w", err)
+		return
 	}
 
 	return

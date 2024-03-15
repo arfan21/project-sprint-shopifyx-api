@@ -40,15 +40,22 @@ type ProductGetListRequest struct {
 }
 
 type ProductDetailResponse struct {
-	ProductID     uuid.UUID `json:"productId"`
-	Name          string    `json:"name"`
-	Price         float64   `json:"price"`
-	ImageUrl      string    `json:"imageUrl"`
-	Stock         int       `json:"stock"`
-	Condition     string    `json:"condition"`
-	Tags          []string  `json:"tags"`
-	IsPurchasable bool      `json:"isPurchasable"`
-	PurchaseCount int       `json:"purchaseCount"`
+	ProductID     uuid.UUID                   `json:"productId"`
+	Name          string                      `json:"name"`
+	Price         float64                     `json:"price"`
+	ImageUrl      string                      `json:"imageUrl"`
+	Stock         int                         `json:"stock"`
+	Condition     string                      `json:"condition"`
+	Tags          []string                    `json:"tags"`
+	IsPurchasable bool                        `json:"isPurchasable"`
+	PurchaseCount int                         `json:"purchaseCount"`
+	Seller        ProductDetailSellerResponse `json:"seller"`
+}
+
+type ProductDetailSellerResponse struct {
+	Name             string                `json:"name"`
+	ProductSoldTotal int                   `json:"productSoldTotal"`
+	BankAccounts     []BankAccountResponse `json:"bankAccounts"`
 }
 
 // ProductGetResponse is model for internal use

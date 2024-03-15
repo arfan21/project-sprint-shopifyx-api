@@ -285,11 +285,25 @@ func TestGetDetail(t *testing.T) {
 
 	t.Run("success", func(t *testing.T) {
 		id := uuid.New()
+		userId := uuid.New()
 
-		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
+		pgxMock.ExpectQuery("SELECT (.+) FROM products JOIN users ON products.userId = users.id WHERE products.id = (.+)").
 			WithArgs(id).
-			WillReturnRows(pgxMock.NewRows([]string{"id", "name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "userId"}).
-				AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, uuid.New()))
+			WillReturnRows(pgxMock.NewRows([]string{"products.id ", "products.name", "price", "imageUrl", "stock", "condition", "tags", "isPurchaseable", "users.id", "users.name"}).
+				AddRow(id, "test name", decimal.Zero, "https://test.com/image.jpg", 10, entity.ProductCondition("new"), nil, true, userId, "test name"))
+
+		pgxMock.ExpectQuery("SELECT (.+) FROM payments (.+)").
+			WithArgs([]uuid.UUID{id}).
+			WillReturnRows(pgxMock.NewRows([]string{"total", "productId"}).AddRow(1, id))
+
+		pgxMock.ExpectQuery("SELECT (.+) FROM payments (.+)").
+			WithArgs(userId).
+			WillReturnRows(pgxMock.NewRows([]string{"total"}).AddRow(1))
+
+		pgxMock.ExpectQuery("SELECT (.+)").
+			WithArgs(userId).
+			WillReturnRows(pgxmock.NewRows([]string{"id", "accountNumber", "accountHolder", "bankName", "userId"}).
+				AddRow(uuid.New(), "1234567890", "Test", "BCA", userId))
 
 		res, err := productSvc.GetDetailByID(context.Background(), id)
 
@@ -301,7 +315,7 @@ func TestGetDetail(t *testing.T) {
 	t.Run("failed, product not found", func(t *testing.T) {
 		id := uuid.New()
 
-		pgxMock.ExpectQuery("SELECT (.+) FROM products WHERE id = (.+)").
+		pgxMock.ExpectQuery("SELECT (.+) FROM products JOIN users ON products.userId = users.id WHERE products.id = (.+)").
 			WithArgs(id).
 			WillReturnError(constant.ErrProductNotFound)
 
