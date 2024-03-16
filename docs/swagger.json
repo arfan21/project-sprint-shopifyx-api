@@ -1108,7 +1108,9 @@
                     "minLength": 5
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 5
                 }
             }
         },
@@ -1145,7 +1147,9 @@
                     "minLength": 5
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 5
                 }
             }
         },

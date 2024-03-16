@@ -1114,7 +1114,9 @@ const docTemplate = `{
                     "minLength": 5
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 5
                 }
             }
         },
@@ -1151,7 +1153,9 @@ const docTemplate = `{
                     "minLength": 5
                 },
                 "username": {
-                    "type": "string"
+                    "type": "string",
+                    "maxLength": 15,
+                    "minLength": 5
                 }
             }
         },

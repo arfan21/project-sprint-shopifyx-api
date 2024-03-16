@@ -48,8 +48,5 @@ func (ctrl ControllerHTTP) UploadImage(c *fiber.Ctx) error {
 	res, err := ctrl.service.UploadImage(c.UserContext(), req)
 	exception.PanicIfNeeded(err)
 
-	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
-		Message: "image uploaded successfully",
-		Data:    res,
-	})
+	return c.Status(fiber.StatusOK).JSON(res)
 }

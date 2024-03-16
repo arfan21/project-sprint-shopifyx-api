@@ -68,10 +68,10 @@ func (r Repository) GetByUsername(ctx context.Context, username string) (data en
 	)
 	if err != nil {
 		if errors.Is(err, pgx.ErrNoRows) {
-			err = constant.ErrUsernameOrPasswordInvalid
+			err = constant.ErrUserNotFound
 		}
 
-		err = fmt.Errorf("user.repository.GetByEmail: failed to get user by email: %w", err)
+		err = fmt.Errorf("user.repository.GetByUsername: failed to get user by username %s: %w", username, err)
 
 		return
 	}

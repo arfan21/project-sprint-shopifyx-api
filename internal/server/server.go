@@ -73,6 +73,11 @@ func New(
 
 func (s *Server) Run() error {
 	s.Routes()
+	s.app.Use(func(c *fiber.Ctx) error {
+		return c.Status(fiber.StatusNotFound).JSON(pkgutil.HTTPResponse{
+			Message: "Not Found",
+		})
+	})
 	ctx := context.Background()
 	go func() {
 		if err := s.app.Listen(pkgutil.GetPort()); err != nil {

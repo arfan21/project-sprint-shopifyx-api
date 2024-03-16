@@ -48,12 +48,30 @@ func Validate[T any](modelValidate T) error {
 			return nil
 		}, decimal.Decimal{})
 
+		validate.RegisterValidation("stringuint", func(fl validator.FieldLevel) bool {
+			if fl.Field().Kind() == reflect.String {
+				val, err := decimal.NewFromString(fl.Field().String())
+				if err != nil {
+					return false
+				}
+
+				if val.LessThan(decimal.NewFromInt(0)) {
+					return false
+				}
+
+				return true
+			}
+			return true
+		})
+
 	})
 
 	translatorOnce.Do(func() {
 		translatorUni, _ := uni.GetTranslator("en")
 		translator = translatorUni
 		en_translations.RegisterDefaultTranslations(validate, translator)
+
+		addTranslation("stringuint", "{0} must be a positive number")
 	})
 
 	err := validate.Struct(modelValidate)
@@ -77,4 +95,23 @@ func Validate[T any](modelValidate T) error {
 	}
 
 	return nil
+}
+
+func addTranslation(tag string, errMessage string) {
+	registerFn := func(ut ut.Translator) error {
+		return ut.Add(tag, errMessage, false)
+	}
+
+	transFn := func(ut ut.Translator, fe validator.FieldError) string {
+		param := fe.Param()
+		tag := fe.Tag()
+
+		t, err := ut.T(tag, fe.Field(), param)
+		if err != nil {
+			return fe.(error).Error()
+		}
+		return t
+	}
+
+	_ = validate.RegisterTranslation(tag, translator, registerFn, transFn)
 }

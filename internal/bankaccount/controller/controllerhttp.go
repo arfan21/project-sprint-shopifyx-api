@@ -74,14 +74,15 @@ func (ctrl ControllerHTTP) Update(c *fiber.Ctx) error {
 		})
 	}
 
-	var req model.BankAccountRequest
-	err := c.BodyParser(&req)
-	exception.PanicIfNeeded(err)
-
-	req.UserID = claims.UserID
 	idStr := c.Params("id")
 	id, err := uuid.Parse(idStr)
 	exception.PanicIfNeeded(err)
+
+	var req model.BankAccountRequest
+	err = c.BodyParser(&req)
+	exception.PanicIfNeeded(err)
+
+	req.UserID = claims.UserID
 	req.BankAccountID = id
 
 	err = ctrl.svc.Update(c.UserContext(), req)

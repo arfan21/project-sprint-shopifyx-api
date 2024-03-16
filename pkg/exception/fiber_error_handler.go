@@ -58,6 +58,11 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 	if errors.As(err, &fiberError) {
 		defaultRes.Code = fiberError.Code
 		defaultRes.Message = fiberError.Message
+		if fiberError.Code == fiber.StatusUnprocessableEntity {
+			defaultRes.Code = fiber.StatusBadRequest
+			defaultRes.Message = http.StatusText(fiber.StatusBadRequest)
+		}
+
 	}
 
 	if errors.Is(err, pgx.ErrNoRows) {
@@ -67,8 +72,8 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 
 	var unmarshalTypeError *json.UnmarshalTypeError
 	if errors.As(err, &unmarshalTypeError) {
-		defaultRes.Code = fiber.StatusUnprocessableEntity
-		defaultRes.Message = http.StatusText(fiber.StatusUnprocessableEntity)
+		defaultRes.Code = fiber.StatusBadRequest
+		defaultRes.Message = http.StatusText(fiber.StatusBadRequest)
 
 		defaultRes.Data = []interface{}{
 			map[string]interface{}{
@@ -78,14 +83,19 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 		}
 	}
 
+	if strings.Contains(strings.ToLower(err.Error()), strings.ToLower("unexpected end of JSON input")) {
+		defaultRes.Code = fiber.StatusBadRequest
+		defaultRes.Message = http.StatusText(fiber.StatusBadRequest)
+	}
+
 	// handle error parse uuid
 	if strings.Contains(strings.ToLower(err.Error()), strings.ToLower("invalid UUID")) {
-		defaultRes.Code = fiber.StatusBadRequest
-		defaultRes.Message = constant.ErrInvalidUUID.Error()
+		defaultRes.Code = fiber.StatusNotFound
+		defaultRes.Message = http.StatusText(fiber.StatusNotFound)
 	}
 
 	if errors.Is(err, fasthttp.ErrNoMultipartForm) {
-		defaultRes.Code = fiber.StatusUnprocessableEntity
+		defaultRes.Code = fiber.StatusBadRequest
 		defaultRes.Message = err.Error()
 	}
 

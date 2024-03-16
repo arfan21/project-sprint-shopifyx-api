@@ -36,6 +36,7 @@ func WithValidateContentTypeImage() ValidateContentTypeOption {
 		config.AllowedTypes["image/jpg"] = struct{}{}
 		config.AllowedTypes["image/jpeg"] = struct{}{}
 		config.AllowedTypes["image/gif"] = struct{}{}
+		config.AllowedTypes["application/octet-stream"] = struct{}{}
 	}
 }
 
@@ -61,7 +62,7 @@ func ValidateContentType(field, contentType string, opt ...ValidateContentTypeOp
 	errMap := []map[string]interface{}{
 		{
 			"field":   field,
-			"message": "file type not allowed",
+			"message": contentType + " type not allowed",
 		},
 	}
 

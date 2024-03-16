@@ -111,6 +111,8 @@ definitions:
         minLength: 5
         type: string
       username:
+        maxLength: 15
+        minLength: 5
         type: string
     required:
     - password
@@ -136,6 +138,8 @@ definitions:
         minLength: 5
         type: string
       username:
+        maxLength: 15
+        minLength: 5
         type: string
     required:
     - name
