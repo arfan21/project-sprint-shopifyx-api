@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"os"
 
 	"github.com/arfan21/project-sprint-shopifyx-api/cmd/api"
@@ -34,5 +35,9 @@ func main() {
 		}
 	}
 
-	api.Serve()
+	err := api.Serve()
+	if err != nil {
+		fmt.Println(err.Error())
+		panic(err)
+	}
 }
