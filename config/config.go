@@ -69,7 +69,7 @@ type s3 struct {
 	EndPoint  string `mapstructure:"S3_BASE_URL"`
 	AccessKey string `mapstructure:"S3_ID"`
 	SecretKey string `mapstructure:"S3_SECRET_KEY"`
-	Bucket    string `mapstructure:"S3_BUCKET"`
+	Bucket    string `mapstructure:"S3_BUCKET_NAME"`
 	UseSSL    bool   `mapstructure:"S3_USESSL"`
 	Region    string `mapstructure:"S3_REGION"`
 }
