@@ -2,3 +2,4 @@ logs
 tmp
 .env
 vendor
+*.pem

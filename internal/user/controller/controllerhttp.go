@@ -34,7 +34,7 @@ func (ctrl ControllerHTTP) Register(c *fiber.Ctx) error {
 	res, err := ctrl.svc.Register(c.UserContext(), req)
 	exception.PanicIfNeeded(err)
 
-	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
+	return c.Status(fiber.StatusCreated).JSON(pkgutil.HTTPResponse{
 		Message: "User registered successfully",
 		Data:    res,
 	})

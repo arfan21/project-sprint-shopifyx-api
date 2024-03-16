@@ -38,7 +38,7 @@ type database struct {
 }
 
 func (d database) GetDSN() string {
-	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=%s", d.Host, d.Port, d.Username, d.Password, d.Name, d.SSLMode)
+	return fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s", d.Host, d.Port, d.Username, d.Password, d.Name)
 }
 
 type jwt struct {

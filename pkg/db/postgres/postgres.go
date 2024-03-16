@@ -20,8 +20,16 @@ const (
 )
 
 func NewPgx() (db *pgxpool.Pool, err error) {
+	dsn := config.Get().Database.GetDSN()
+
+	if config.Get().Env == "dev" {
+		dsn += " sslmode=disable"
+	} else {
+		dsn += " sslmode=verify-full sslrootcert=ap-southeast-1-bundle.pem"
+	}
+
 	ctx := context.Background()
-	pgConfig, err := pgxpool.ParseConfig(config.Get().Database.GetDSN())
+	pgConfig, err := pgxpool.ParseConfig(dsn)
 	if err != nil {
 		err = fmt.Errorf("failed to parse database config: %w", err)
 		return nil, err
