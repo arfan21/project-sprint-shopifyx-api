@@ -58,7 +58,7 @@ func (ctrl ControllerHTTP) Login(c *fiber.Ctx) error {
 	res, err := ctrl.svc.Login(c.UserContext(), req)
 	exception.PanicIfNeeded(err)
 
-	return c.Status(fiber.StatusCreated).JSON(pkgutil.HTTPResponse{
+	return c.Status(fiber.StatusOK).JSON(pkgutil.HTTPResponse{
 		Message: "User login successfully",
 		Data:    res,
 	})
