@@ -6,7 +6,7 @@ swag:
 	swag init --parseDependency --parseInternal --parseDepth 1 -g ./cmd/main.go
 
 run:  swag
-	go run cmd/main.go serve
+	go run cmd/main.go
 
 build:  swag
 	go build -o tmp/main cmd/main.go
@@ -20,10 +20,10 @@ docker-run:
 	project-sprint-shopifyx-api:latest
 
 air:
-	air -c .air.toml serve
+	air -c .air.toml
 
 air-win:
-	air -c .air.win.toml serve
+	air -c .air.win.toml
 
 # make startProm
 .PHONY: startProm

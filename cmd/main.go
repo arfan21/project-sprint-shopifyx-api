@@ -5,8 +5,6 @@ import (
 
 	"github.com/arfan21/project-sprint-shopifyx-api/cmd/api"
 	migration "github.com/arfan21/project-sprint-shopifyx-api/cmd/migrate"
-	"github.com/arfan21/project-sprint-shopifyx-api/config"
-	"github.com/urfave/cli/v2"
 )
 
 // @title project-sprint-shopifyx-api
@@ -21,14 +19,20 @@ import (
 // @host localhost:8080
 // @BasePath /
 func main() {
-	appCli := cli.NewApp()
-	appCli.Name = config.Get().Service.Name
-	appCli.Commands = []*cli.Command{
-		migration.Root(),
-		api.Serve(),
+
+	args := os.Args
+
+	if len(args) > 2 {
+		if args[1] == "migrate" && args[2] == "up" {
+			migration.Up()
+			return
+		}
+
+		if args[1] == "migrate" && args[2] == "down" {
+			migration.Down()
+			return
+		}
 	}
 
-	if err := appCli.Run(os.Args); err != nil {
-		panic(err)
-	}
+	api.Serve()
 }

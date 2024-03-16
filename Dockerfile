@@ -18,4 +18,4 @@ WORKDIR /app
 
 COPY --from=builder /compiler/server .
 
-CMD ["./server", "serve"]
+CMD ["./server"]

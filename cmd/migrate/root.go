@@ -4,7 +4,6 @@ import (
 	"github.com/arfan21/project-sprint-shopifyx-api/migration"
 	dbpostgres "github.com/arfan21/project-sprint-shopifyx-api/pkg/db/postgres"
 	"github.com/jackc/pgx/v5/stdlib"
-	"github.com/urfave/cli/v2"
 )
 
 func initMigration() (*migration.Migration, error) {
@@ -22,18 +21,4 @@ func initMigration() (*migration.Migration, error) {
 
 	return migration, nil
 
-}
-
-func Root() *cli.Command {
-
-	return &cli.Command{
-		Name:  "migrate",
-		Usage: "Run migration",
-		Subcommands: []*cli.Command{
-			Up(),
-			Down(),
-			Fresh(),
-			Drop(),
-		},
-	}
 }
