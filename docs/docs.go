@@ -1055,7 +1055,8 @@ const docTemplate = `{
                 "isPurchaseable",
                 "name",
                 "price",
-                "stock"
+                "stock",
+                "tags"
             ],
             "properties": {
                 "condition": {
@@ -1080,7 +1081,8 @@ const docTemplate = `{
                     "type": "number"
                 },
                 "stock": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "tags": {
                     "type": "array",
@@ -1097,7 +1099,8 @@ const docTemplate = `{
             ],
             "properties": {
                 "stock": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },

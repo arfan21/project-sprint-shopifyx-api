@@ -2,6 +2,8 @@ package validation
 
 import (
 	"encoding/json"
+	"fmt"
+	"net/url"
 	"reflect"
 	"strings"
 	"sync"
@@ -64,6 +66,50 @@ func Validate[T any](modelValidate T) error {
 			return true
 		})
 
+		validate.RegisterValidation("dgte", func(fl validator.FieldLevel) bool {
+			if fl.Field().Kind() == reflect.String {
+				val, err := decimal.NewFromString(fl.Field().String())
+				if err != nil {
+					return false
+				}
+
+				param := fl.Param()
+				paramVal, err := decimal.NewFromString(param)
+				if err != nil {
+					return false
+				}
+
+				if val.LessThan(paramVal) {
+					return false
+				}
+
+				return true
+			}
+			return true
+		})
+
+		validate.RegisterValidation("customurl", func(fl validator.FieldLevel) bool {
+			if fl.Field().Kind() == reflect.String {
+				val := fl.Field().String()
+				if val == "" {
+					return true
+				}
+
+				u, err := url.Parse(val)
+				if err != nil {
+					fmt.Println("error parse url", err)
+					return false
+				}
+
+				if !strings.Contains(u.Host, ".") {
+					fmt.Println("error has prefix url", err)
+					return false
+				}
+
+				return true
+			}
+			return true
+		})
 	})
 
 	translatorOnce.Do(func() {
@@ -72,6 +118,8 @@ func Validate[T any](modelValidate T) error {
 		en_translations.RegisterDefaultTranslations(validate, translator)
 
 		addTranslation("stringuint", "{0} must be a positive number")
+		addTranslation("dgte", "{0} must be greater than or equal to {1}")
+		addTranslation("customurl", "{0} must be a valid url")
 	})
 
 	err := validate.Struct(modelValidate)

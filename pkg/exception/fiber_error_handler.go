@@ -103,5 +103,10 @@ func FiberErrorHandler(ctx *fiber.Ctx, err error) error {
 		defaultRes.Message = http.StatusText(defaultRes.Code)
 	}
 
+	if strings.Contains(err.Error(), "to decimal: exponent is not numeric") || strings.Contains(err.Error(), "error decoding string") {
+		defaultRes.Code = fiber.StatusBadRequest
+		defaultRes.Message = "Bad Request, value must be a number"
+	}
+
 	return ctx.Status(defaultRes.Code).JSON(defaultRes)
 }

@@ -1049,7 +1049,8 @@
                 "isPurchaseable",
                 "name",
                 "price",
-                "stock"
+                "stock",
+                "tags"
             ],
             "properties": {
                 "condition": {
@@ -1074,7 +1075,8 @@
                     "type": "number"
                 },
                 "stock": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 },
                 "tags": {
                     "type": "array",
@@ -1091,7 +1093,8 @@
             ],
             "properties": {
                 "stock": {
-                    "type": "integer"
+                    "type": "integer",
+                    "minimum": 0
                 }
             }
         },

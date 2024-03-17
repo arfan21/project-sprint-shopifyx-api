@@ -84,6 +84,7 @@ definitions:
       price:
         type: number
       stock:
+        minimum: 0
         type: integer
       tags:
         items:
@@ -96,10 +97,12 @@ definitions:
     - name
     - price
     - stock
+    - tags
     type: object
   github_com_arfan21_project-sprint-shopifyx-api_internal_model.ProductUpdateStockRequest:
     properties:
       stock:
+        minimum: 0
         type: integer
     required:
     - stock
