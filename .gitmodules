@@ -1,0 +1,3 @@
+[submodule "MarketplaceTestCases"]
+	path = MarketplaceTestCases
+	url = https://github.com/nandanugg/MarketplaceTestCases
